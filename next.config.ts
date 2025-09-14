@@ -2,8 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  // Disable telemetry to avoid trace files
-  telemetry: false,
   // Ignore ESLint during builds for production
   eslint: {
     ignoreDuringBuilds: true,

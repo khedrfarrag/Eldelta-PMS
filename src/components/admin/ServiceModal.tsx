@@ -136,7 +136,7 @@ export default function ServiceModal({
               </label>
               {translatedService.features.length > 0 ? (
                 <ul className="space-y-2">
-                  {translatedService.features.map((feature, index) => (
+                  {translatedService.features.map((feature: any, index: number) => (
                     <li key={index} className="flex items-start">
                       <span className="text-blue-500 dark:text-blue-400 mr-2 mt-1">•</span>
                       <span className="text-gray-700 dark:text-gray-300">{feature}</span>

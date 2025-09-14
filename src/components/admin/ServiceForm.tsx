@@ -112,7 +112,7 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
         });
         
         // Send the translated service data directly to API
-        result = await createService(translatedService);
+        result = await createService(translatedService as any);
       } catch (error) {
         console.error('Translation failed:', error);
         // Fallback to regular creation

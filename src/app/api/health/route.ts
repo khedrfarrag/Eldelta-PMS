@@ -11,7 +11,8 @@ export async function GET(request: NextRequest) {
     environment: process.env.NODE_ENV,
     version: process.env.npm_package_version || '1.0.0',
     services: {} as Record<string, any>,
-    performance: {} as Record<string, any>
+    performance: {} as Record<string, any>,
+    error: undefined as string | undefined
   }
 
   try {
