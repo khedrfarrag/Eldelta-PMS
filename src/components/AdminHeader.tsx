@@ -55,12 +55,12 @@ export default function AdminHeader() {
                       <p className="font-medium">{user?.name}</p>
                       <p className="text-gray-500">{user?.email}</p>
                     </div>
-                    {/* <button
+                    <button
                       onClick={logout}
                       className="block w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       تسجيل الخروج
-                    </button> */}
+                    </button>
                   </div>
                 </div>
               )}
