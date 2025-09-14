@@ -4,14 +4,6 @@
 
 [build.environment]
   NODE_VERSION = "22.19.0"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# Environment variables for build time
-[build.environment]
   MONGODB_URI = "your-mongodb-atlas-uri-here"
   MONGODB_DB = "eldilta"
   JWT_SECRET = "your-super-secret-jwt-key-here-change-in-production"
@@ -24,3 +16,8 @@
   EMAIL_USER = "your-email@gmail.com"
   EMAIL_PASS = "your-app-password"
   LIBRETRANSLATE_URL = "https://your-libretranslate-url.com"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
