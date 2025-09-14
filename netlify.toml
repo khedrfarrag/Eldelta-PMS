@@ -1,0 +1,26 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22.19.0"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Environment variables for build time
+[build.environment]
+  MONGODB_URI = "your-mongodb-atlas-uri-here"
+  MONGODB_DB = "eldilta"
+  JWT_SECRET = "your-super-secret-jwt-key-here-change-in-production"
+  JWT_EXPIRES_IN = "7d"
+  NEXTAUTH_SECRET = "your-nextauth-secret-key-here"
+  NEXTAUTH_URL = "https://your-netlify-site.netlify.app"
+  NODE_ENV = "production"
+  EMAIL_HOST = "smtp.gmail.com"
+  EMAIL_PORT = "587"
+  EMAIL_USER = "your-email@gmail.com"
+  EMAIL_PASS = "your-app-password"
+  LIBRETRANSLATE_URL = "https://your-libretranslate-url.com"
