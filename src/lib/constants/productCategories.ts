@@ -33,10 +33,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
   { value: 'home_appliances', labelAr: 'أجهزة منزلية', labelEn: 'Home Appliances' },
 ]
 
-export const PRODUCT_CATEGORY_VALUES = PRODUCT_CATEGORIES.map(c => c.value) as readonly [
-  ProductCategoryValue,
-  ...ProductCategoryValue[]
-]
+export const PRODUCT_CATEGORY_VALUES = PRODUCT_CATEGORIES.map(c => c.value) as ProductCategoryValue[]
 
 export function getCategoryLabelAr(value?: string): string {
   if (!value) return '-'

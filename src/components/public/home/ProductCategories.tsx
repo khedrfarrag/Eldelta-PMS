@@ -109,7 +109,7 @@ export default function ProductCategories() {
       scale: 0.9,
       transition: {
         duration: 0.3,
-        ease: "easeIn"
+        ease: "easeIn" as any
       }
     },
     center: { 
@@ -118,7 +118,7 @@ export default function ProductCategories() {
       scale: 1,
       transition: {
         duration: 0.5,
-        ease: "easeOut"
+        ease: "easeOut" as any
       }
     },
     exit: { 
@@ -127,7 +127,7 @@ export default function ProductCategories() {
       scale: 0.9,
       transition: {
         duration: 0.3,
-        ease: "easeIn"
+        ease: "easeIn" as any
       }
     }
   };
@@ -165,7 +165,7 @@ export default function ProductCategories() {
       scale: 1,
       transition: {
         duration: 0.4,
-        ease: "easeOut"
+        ease: "easeOut" as any
       }
     }
   };
@@ -175,14 +175,14 @@ export default function ProductCategories() {
       scale: 1,
       transition: {
         duration: 0.2,
-        ease: "easeOut"
+        ease: "easeOut" as any
       }
     },
     active: { 
       scale: 1.25,
       transition: {
         duration: 0.3,
-        ease: "easeOut"
+        ease: "easeOut" as any
       }
     }
   };
