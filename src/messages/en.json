@@ -1,0 +1,45 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "contact": "Contact Us",
+    "startNow": "Start Now"
+  },
+  "hero": {
+    "title": "Welcome to Al-Delta Company",
+    "subtitle": "Comprehensive import and export services with quality guarantee",
+    "discoverButton": "Discover Our Services"
+  },
+  "services": {
+    "title": "Our Services",
+    "import": {
+      "title": "Import from China",
+      "description": "Comprehensive import services with quality guarantee"
+    },
+    "export": {
+      "title": "Export Services",
+      "description": "Professional export services for global markets"
+    },
+    "customs": {
+      "title": "Customs Clearance",
+      "description": "Customs clearance services and document preparation"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "addressValue": "Riyadh, Kingdom of Saudi Arabia"
+  },
+  "theme": {
+    "light": "Light Mode",
+    "dark": "Dark Mode",
+    "primaryColor": "Primary Color"
+  },
+  "language": {
+    "english": "English",
+    "arabic": "العربية"
+  }
+}
