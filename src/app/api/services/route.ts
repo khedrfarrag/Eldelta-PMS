@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import clientPromise from '@/lib/mongodb'
-import { translateService } from '@/lib/translationService'
+// Translation at read-time is removed. Services store {ar,en} and we select by lang.
 
 // GET - Get all services (public) with language support
 export async function GET(request: NextRequest) {
@@ -33,16 +33,21 @@ export async function GET(request: NextRequest) {
       .sort({ order: 1 })
       .toArray()
     
-    // Translate services to requested language
-    const translatedServices = services.map(service => 
-      translateService(service, lang as 'ar' | 'en')
-    )
-    
-    return NextResponse.json({
-      success: true,
-      services: translatedServices,
-      language: lang
-    })
+    // Map services to requested language directly from stored fields
+    const mapped = services.map((s: any) => ({
+      _id: s._id,
+      name: typeof s.name === 'object' ? (s.name[lang] || s.name.ar || s.name.en || '') : s.name,
+      description: typeof s.description === 'object' ? (s.description[lang] || s.description.ar || s.description.en || '') : s.description,
+      features: Array.isArray(s.features)
+        ? s.features.map((f: any) => (typeof f === 'object' ? (f[lang] || f.ar || f.en || '') : f))
+        : [],
+      status: s.status,
+      order: s.order,
+      createdAt: s.createdAt,
+      updatedAt: s.updatedAt,
+    }))
+
+    return NextResponse.json({ success: true, services: mapped, language: lang })
     
   } catch (error) {
     console.error('Get services error:', error)

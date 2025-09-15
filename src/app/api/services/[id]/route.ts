@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import clientPromise from '@/lib/mongodb'
 import { ObjectId } from 'mongodb'
-import { translateService } from '@/lib/translationService'
+// Translation at read-time is removed. Select stored fields by lang.
 
 // GET - Get service by ID (public)
 export async function GET(
@@ -47,20 +47,23 @@ export async function GET(
       )
     }
     
-    // Translate service to requested language
-    const translatedService = translateService(service, lang as 'ar' | 'en')
-    
+    const name = typeof service.name === 'object' ? (service.name[lang] || service.name.ar || service.name.en || '') : service.name
+    const description = typeof service.description === 'object' ? (service.description[lang] || service.description.ar || service.description.en || '') : service.description
+    const features = Array.isArray(service.features)
+      ? service.features.map((f: any) => (typeof f === 'object' ? (f[lang] || f.ar || f.en || '') : f))
+      : []
+
     return NextResponse.json({
       success: true,
       service: {
         _id: service._id,
-        name: translatedService.name,
-        description: translatedService.description,
-        features: translatedService.features,
+        name,
+        description,
+        features,
         status: service.status,
         order: service.order,
         createdAt: service.createdAt,
-        updatedAt: service.updatedAt
+        updatedAt: service.updatedAt,
       }
     })
     
