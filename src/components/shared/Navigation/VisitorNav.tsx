@@ -53,7 +53,7 @@ export default function VisitorNav() {
       className={`fixed z-50 h-20 transition-all duration-900 ease-in-out bg-gray-900 ${
         isScrolled
           ? "top-0 left-0 right-0 w-full shadow-2xl"
-          : "top-0 left-0 right-0 w-full md:top-5 md:left-2 md:right-2 md:w-auto md:rounded-3xl"
+          : "top-5 left-0 right-0 w-full md:top-5 md:left-2 md:right-2 md:w-auto md:rounded-3xl"
       }`}
     >
       <div className="w-full h-full px-6 lg:px-8">
