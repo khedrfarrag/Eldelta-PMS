@@ -20,62 +20,136 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
   const { createService, updateService, loading } = useAdminServices();
 
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    features: [""],
+    name: { ar: "", en: "" },
+    description: { ar: "", en: "" },
+    features: [{ ar: "", en: "" }],
     status: "active" as "active" | "inactive",
     order: 1,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  // Translation function using Google Translate API
+  const translateText = async (text: string, from: string, to: string): Promise<string> => {
+    try {
+      // Using Google Translate API (free tier)
+      const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(text)}`);
+      const data = await response.json();
+      return data[0][0][0] || text;
+    } catch (error) {
+      console.error('Translation error:', error);
+      return text; // Return original text if translation fails
+    }
+  };
+
+  // Auto-translate function
+  const handleAutoTranslate = async () => {
+    if (isTranslating) return;
+    
+    setIsTranslating(true);
+    try {
+      // Translate from current language to the other
+      const fromLang = language;
+      const toLang = language === 'ar' ? 'en' : 'ar';
+      
+      // Translate name
+      if (formData.name[fromLang].trim()) {
+        const translatedName = await translateText(formData.name[fromLang], fromLang, toLang);
+        setFormData(prev => ({
+          ...prev,
+          name: { ...prev.name, [toLang]: translatedName }
+        }));
+      }
+      
+      // Translate description
+      if (formData.description[fromLang].trim()) {
+        const translatedDesc = await translateText(formData.description[fromLang], fromLang, toLang);
+        setFormData(prev => ({
+          ...prev,
+          description: { ...prev.description, [toLang]: translatedDesc }
+        }));
+      }
+      
+      // Translate features
+      const translatedFeatures = await Promise.all(
+        formData.features.map(async (feature) => {
+          if (feature[fromLang].trim()) {
+            const translated = await translateText(feature[fromLang], fromLang, toLang);
+            return { ...feature, [toLang]: translated };
+          }
+          return feature;
+        })
+      );
+      
+      setFormData(prev => ({
+        ...prev,
+        features: translatedFeatures
+      }));
+      
+    } catch (error) {
+      console.error('Auto-translation failed:', error);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
   // Initialize form with service data if editing, or reset if creating new
   useEffect(() => {
     if (service) {
-      // Editing existing service - pick current language values
-      const pick = (val: any) =>
-        typeof val === 'object' && val !== null
-          ? (val as any)[language] || (val as any).ar || (val as any).en || ''
-          : val;
+      // Editing existing service - extract both languages
+      const extractLangData = (val: any) => {
+        if (typeof val === 'object' && val !== null) {
+          return {
+            ar: val.ar || '',
+            en: val.en || ''
+          };
+        }
+        return { ar: val || '', en: val || '' };
+      };
+      
       setFormData({
-        name: pick(service.name),
-        description: pick(service.description),
+        name: extractLangData(service.name),
+        description: extractLangData(service.description),
         features: Array.isArray(service.features)
-          ? service.features.map((f: any) => (typeof f === 'object' ? pick(f) : f))
-          : [""],
+          ? service.features.map((f: any) => extractLangData(f))
+          : [{ ar: "", en: "" }],
         status: service.status,
         order: service.order,
       });
     } else {
       // Creating new service - reset form
       setFormData({
-        name: "",
-        description: "",
-        features: [""],
+        name: { ar: "", en: "" },
+        description: { ar: "", en: "" },
+        features: [{ ar: "", en: "" }],
         status: "active",
         order: 1,
       });
     }
     // Clear errors when form opens
     setErrors({});
-  }, [service, isOpen, language]);
+  }, [service, isOpen]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = language === 'ar' ? 'اسم الخدمة مطلوب' : 'Service name is required';
-    } else if (formData.name.trim().length < 3) {
+    // Check if at least one language has content for name
+    if (!formData.name.ar.trim() && !formData.name.en.trim()) {
+      newErrors.name = language === 'ar' ? 'اسم الخدمة مطلوب (عربي أو إنجليزي)' : 'Service name is required (Arabic or English)';
+    } else if (formData.name.ar.trim().length < 3 && formData.name.en.trim().length < 3) {
       newErrors.name = language === 'ar' ? 'اسم الخدمة يجب أن يكون 3 أحرف على الأقل' : 'Service name must be at least 3 characters';
     }
 
-    if (!formData.description.trim()) {
-      newErrors.description = language === 'ar' ? 'وصف الخدمة مطلوب' : 'Service description is required';
-    } else if (formData.description.trim().length < 10) {
+    // Check if at least one language has content for description
+    if (!formData.description.ar.trim() && !formData.description.en.trim()) {
+      newErrors.description = language === 'ar' ? 'وصف الخدمة مطلوب (عربي أو إنجليزي)' : 'Service description is required (Arabic or English)';
+    } else if (formData.description.ar.trim().length < 10 && formData.description.en.trim().length < 10) {
       newErrors.description = language === 'ar' ? 'وصف الخدمة يجب أن يكون 10 أحرف على الأقل' : 'Service description must be at least 10 characters';
     }
 
-    const validFeatures = formData.features.filter(f => f.trim().length > 0);
+    // Check features - at least one feature with content in any language
+    const validFeatures = formData.features.filter(f => f.ar.trim().length > 0 || f.en.trim().length > 0);
     if (validFeatures.length === 0) {
       newErrors.features = language === 'ar' ? 'يجب إضافة مميزة واحدة على الأقل' : 'At least one feature is required';
     }
@@ -95,21 +169,28 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
       return;
     }
 
-    const validFeatures = formData.features.filter(f => f.trim().length > 0);
+    // Filter out empty features
+    const validFeatures = formData.features.filter(f => f.ar.trim().length > 0 || f.en.trim().length > 0);
     
     let result;
     if (isEditing && service) {
-      // For editing, send the localized fields as provided
+      // For editing, send the multilingual data
       const submitData = {
-        ...formData,
+        name: formData.name,
+        description: formData.description,
         features: validFeatures,
+        status: formData.status,
+        order: formData.order,
       };
       result = await updateService(service._id, submitData);
     } else {
-      // Creating new service: send as provided (admin fills language in UI policy)
+      // Creating new service: send multilingual data
       const submitData = {
-        ...formData,
+        name: formData.name,
+        description: formData.description,
         features: validFeatures,
+        status: formData.status,
+        order: formData.order,
       };
       result = await createService(submitData);
     }
@@ -120,16 +201,16 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
     }
   };
 
-  const handleFeatureChange = (index: number, value: string) => {
+  const handleFeatureChange = (index: number, lang: 'ar' | 'en', value: string) => {
     const newFeatures = [...formData.features];
-    newFeatures[index] = value;
+    newFeatures[index] = { ...newFeatures[index], [lang]: value };
     setFormData({ ...formData, features: newFeatures });
   };
 
   const addFeature = () => {
     setFormData({
       ...formData,
-      features: [...formData.features, ""],
+      features: [...formData.features, { ar: "", en: "" }],
     });
   };
 
@@ -160,6 +241,10 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
       namePlaceholder: 'أدخل اسم الخدمة...',
       descriptionPlaceholder: 'أدخل وصف الخدمة...',
       featurePlaceholder: 'أدخل المميزة...',
+      autoTranslate: 'ترجمة تلقائية',
+      translating: 'جاري الترجمة...',
+      arabic: 'عربي',
+      english: 'إنجليزي',
     },
     en: {
       title: isEditing ? 'Edit Service' : 'Add New Service',
@@ -177,6 +262,10 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
       namePlaceholder: 'Enter service name...',
       descriptionPlaceholder: 'Enter service description...',
       featurePlaceholder: 'Enter feature...',
+      autoTranslate: 'Auto Translate',
+      translating: 'Translating...',
+      arabic: 'Arabic',
+      english: 'English',
     },
   };
 
@@ -201,21 +290,72 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Auto Translate Button */}
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={handleAutoTranslate}
+                disabled={isTranslating}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {isTranslating ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    {texts[language].translating}
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                    </svg>
+                    {texts[language].autoTranslate}
+                  </>
+                )}
+              </button>
+            </div>
+
             {/* Service Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {texts[language].name} *
               </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder={texts[language].namePlaceholder}
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                  errors.name ? 'border-red-500' : 'border-gray-300'
-                }`}
-                dir={isRTL ? 'rtl' : 'ltr'}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Arabic Name */}
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    {texts[language].arabic}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name.ar}
+                    onChange={(e) => setFormData({ ...formData, name: { ...formData.name, ar: e.target.value } })}
+                    placeholder={texts[language].namePlaceholder}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                      errors.name ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    dir="rtl"
+                  />
+                </div>
+                {/* English Name */}
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    {texts[language].english}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name.en}
+                    onChange={(e) => setFormData({ ...formData, name: { ...formData.name, en: e.target.value } })}
+                    placeholder={texts[language].namePlaceholder}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                      errors.name ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    dir="ltr"
+                  />
+                </div>
+              </div>
               {errors.name && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name}</p>
               )}
@@ -226,16 +366,40 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {texts[language].description} *
               </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder={texts[language].descriptionPlaceholder}
-                rows={4}
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                  errors.description ? 'border-red-500' : 'border-gray-300'
-                }`}
-                dir={isRTL ? 'rtl' : 'ltr'}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Arabic Description */}
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    {texts[language].arabic}
+                  </label>
+                  <textarea
+                    value={formData.description.ar}
+                    onChange={(e) => setFormData({ ...formData, description: { ...formData.description, ar: e.target.value } })}
+                    placeholder={texts[language].descriptionPlaceholder}
+                    rows={4}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                      errors.description ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    dir="rtl"
+                  />
+                </div>
+                {/* English Description */}
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    {texts[language].english}
+                  </label>
+                  <textarea
+                    value={formData.description.en}
+                    onChange={(e) => setFormData({ ...formData, description: { ...formData.description, en: e.target.value } })}
+                    placeholder={texts[language].descriptionPlaceholder}
+                    rows={4}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                      errors.description ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    dir="ltr"
+                  />
+                </div>
+              </div>
               {errors.description && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description}</p>
               )}
@@ -246,34 +410,60 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {texts[language].features} *
               </label>
-              <div className="space-y-2">
+              <div className="space-y-4">
                 {formData.features.map((feature, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={feature}
-                      onChange={(e) => handleFeatureChange(index, e.target.value)}
-                      placeholder={`${texts[language].featurePlaceholder} ${index + 1}`}
-                      className={`flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                        errors.features ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      dir={isRTL ? 'rtl' : 'ltr'}
-                    />
+                  <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Arabic Feature */}
+                      <div>
+                        <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                          {texts[language].arabic} - {texts[language].featurePlaceholder} {index + 1}
+                        </label>
+                        <input
+                          type="text"
+                          value={feature.ar}
+                          onChange={(e) => handleFeatureChange(index, 'ar', e.target.value)}
+                          placeholder={texts[language].featurePlaceholder}
+                          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                            errors.features ? 'border-red-500' : 'border-gray-300'
+                          }`}
+                          dir="rtl"
+                        />
+                      </div>
+                      {/* English Feature */}
+                      <div>
+                        <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                          {texts[language].english} - {texts[language].featurePlaceholder} {index + 1}
+                        </label>
+                        <input
+                          type="text"
+                          value={feature.en}
+                          onChange={(e) => handleFeatureChange(index, 'en', e.target.value)}
+                          placeholder={texts[language].featurePlaceholder}
+                          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                            errors.features ? 'border-red-500' : 'border-gray-300'
+                          }`}
+                          dir="ltr"
+                        />
+                      </div>
+                    </div>
                     {formData.features.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeFeature(index)}
-                        className="px-3 py-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
-                      >
-                        {texts[language].removeFeature}
-                      </button>
+                      <div className="flex justify-end mt-2">
+                        <button
+                          type="button"
+                          onClick={() => removeFeature(index)}
+                          className="px-3 py-1 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm"
+                        >
+                          {texts[language].removeFeature}
+                        </button>
+                      </div>
                     )}
                   </div>
                 ))}
                 <button
                   type="button"
                   onClick={addFeature}
-                  className="px-4 py-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+                  className="px-4 py-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium border border-dashed border-gray-300 dark:border-gray-600 rounded-lg w-full"
                 >
                   + {texts[language].addFeature}
                 </button>
