@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAdminServices, Service } from "@/hooks/useServices";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { translateService, createServiceWithTranslations } from "@/lib/translationService";
+// Runtime translation removed; optional server-side translate-on-write can be added later.
 
 interface ServiceFormProps {
   service?: Service | null;
@@ -32,12 +32,17 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
   // Initialize form with service data if editing, or reset if creating new
   useEffect(() => {
     if (service) {
-      // Editing existing service - translate the data for display
-      const translatedService = translateService(service, language);
+      // Editing existing service - pick current language values
+      const pick = (val: any) =>
+        typeof val === 'object' && val !== null
+          ? (val as any)[language] || (val as any).ar || (val as any).en || ''
+          : val;
       setFormData({
-        name: translatedService.name,
-        description: translatedService.description,
-        features: translatedService.features.length > 0 ? translatedService.features : [""],
+        name: pick(service.name),
+        description: pick(service.description),
+        features: Array.isArray(service.features)
+          ? service.features.map((f: any) => (typeof f === 'object' ? pick(f) : f))
+          : [""],
         status: service.status,
         order: service.order,
       });
@@ -94,34 +99,19 @@ export default function ServiceForm({ service, isOpen, onClose, onSuccess }: Ser
     
     let result;
     if (isEditing && service) {
-      // For editing, send the data as is (API will handle translation)
+      // For editing, send the localized fields as provided
       const submitData = {
         ...formData,
         features: validFeatures,
       };
       result = await updateService(service._id, submitData);
     } else {
-      // For creating new service, use translation service
-      try {
-        const translatedService = await createServiceWithTranslations({
-          name: formData.name,
-          description: formData.description,
-          features: validFeatures,
-          status: formData.status,
-          order: formData.order,
-        });
-        
-        // Send the translated service data directly to API
-        result = await createService(translatedService as any);
-      } catch (error) {
-        console.error('Translation failed:', error);
-        // Fallback to regular creation
-        const submitData = {
-          ...formData,
-          features: validFeatures,
-        };
-        result = await createService(submitData);
-      }
+      // Creating new service: send as provided (admin fills language in UI policy)
+      const submitData = {
+        ...formData,
+        features: validFeatures,
+      };
+      result = await createService(submitData);
     }
 
     if (result.success) {

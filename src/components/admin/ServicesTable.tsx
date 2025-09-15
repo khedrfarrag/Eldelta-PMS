@@ -8,7 +8,7 @@ import FiltersSheet from "@/components/ui/FiltersSheet";
 import ServiceModal from "./ServiceModal";
 import ServiceForm from "./ServiceForm";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { translateService } from "@/lib/translationService";
+// Removed runtime translation; table receives localized data from API.
 
 const STATUS_OPTIONS = [
   { value: "all", label: "الكل" },
@@ -346,8 +346,17 @@ export default function ServicesTable() {
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {services.map((service) => {
-                  // Ensure we have translated strings, not objects
-                  const translatedService = translateService(service, language);
+                  const pick = (val: any) =>
+                    typeof val === 'object' && val !== null
+                      ? (val as any)[language] || (val as any).ar || (val as any).en || ''
+                      : val;
+                  const translatedService = {
+                    name: pick(service.name),
+                    description: pick(service.description),
+                    features: Array.isArray(service.features)
+                      ? service.features.map((f: any) => (typeof f === 'object' ? pick(f) : f))
+                      : [],
+                  };
                   return (
                     <tr
                       key={service._id}
