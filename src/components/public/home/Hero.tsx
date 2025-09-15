@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import AnimatedThemeToggle from "@/components/shared/Navigation/AnimatedThemeToggle";
-import mobileheroimg from "../../../../public/images/homepage/homeMobile.png";
+// import mobileheroimg from "../../../../public/images/homepage/homeMobile.png";
 
 export default function Hero() {
   const { language } = useLanguage();
@@ -17,7 +17,7 @@ export default function Hero() {
         {/* Hero image fills container */}
         {/* Mobile image */}
         <Image
-          src={mobileheroimg}
+          src={"/images/homepage/homeMobile.png"}
           alt={isRTL ? "سفينة شحن" : "Cargo ship"}
           fill
           priority
