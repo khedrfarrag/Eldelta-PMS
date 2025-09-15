@@ -23,7 +23,8 @@ export default function Hero() {
           priority
           fetchPriority="high"
           placeholder="empty"
-          className=" md:hidden "
+          unoptimized
+          className="object-cover object-center md:hidden"
           sizes="100vw"
         />
 

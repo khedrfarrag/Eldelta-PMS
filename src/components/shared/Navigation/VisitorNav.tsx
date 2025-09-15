@@ -53,7 +53,7 @@ export default function VisitorNav() {
       className={`fixed z-50 h-20 transition-all duration-900 ease-in-out bg-gray-900 ${
         isScrolled
           ? "top-0 left-0 right-0 w-full shadow-2xl"
-          : "top-5 left-2 right-2 w-auto rounded-3xl"
+          : "top-0 left-0 right-0 w-full md:top-5 md:left-2 md:right-2 md:w-auto md:rounded-3xl"
       }`}
     >
       <div className="w-full h-full px-6 lg:px-8">
@@ -91,7 +91,7 @@ export default function VisitorNav() {
           </div>
 
           {/* Center - Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8 space-x-reverse">
+          <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -167,7 +167,7 @@ export default function VisitorNav() {
 
           {/* Mobile Menu Content */}
           <div
-            className={`absolute top-full left-0 right-0 w-screen bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50 transition-colors duration-300 overflow-x-hidden max-w-full
+            className={`fixed top-20 inset-x-0 md:absolute md:top-full md:left-0 md:right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50 transition-colors duration-300 overflow-x-hidden max-w-full
              ${isScrolled ? "rounded-none" : "rounded-2xl"}
             `}
           >
