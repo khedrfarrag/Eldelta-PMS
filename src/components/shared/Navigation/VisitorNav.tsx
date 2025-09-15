@@ -50,9 +50,9 @@ export default function VisitorNav() {
   return (
     // ?i have to add this classname moving duration 1000ms smoothly?
     <nav
-      className={`fixed z-50 h-20  transition-all duration-900 ease-in-out bg-gray-900 ${
+      className={`fixed z-50 h-20 transition-all duration-900 ease-in-out bg-gray-900 ${
         isScrolled
-          ? "top-0 left-0 right-0 w-full shadow-2xl "
+          ? "top-0 left-0 right-0 w-full shadow-2xl"
           : "top-5 left-2 right-2 w-auto rounded-3xl"
       }`}
     >
@@ -167,9 +167,8 @@ export default function VisitorNav() {
 
           {/* Mobile Menu Content */}
           <div
-            className={`absolute top-full left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50 transition-colors duration-300
+            className={`absolute top-full left-0 right-0 w-screen bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50 transition-colors duration-300 overflow-x-hidden max-w-full
              ${isScrolled ? "rounded-none" : "rounded-2xl"}
-      
             `}
           >
             <div className="px-4 py-3 space-y-1">
@@ -189,7 +188,7 @@ export default function VisitorNav() {
               ))}
 
               {/* Mobile Theme and Language Toggles */}
-              <div className="flex items-center justify-center space-x-50 pt-3 border-t border-gray-300 ">
+              <div className="flex items-center justify-center space-x-4 pt-3 border-t border-gray-300 ">
                 {/* <ThemeToggle /> */}
                 <LanguageToggle />
               </div>
