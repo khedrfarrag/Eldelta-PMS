@@ -118,7 +118,13 @@ export default function LogisticsForm() {
         const data = await res.json()
         if (!isMounted) return
         if (data?.service) {
-          setService({ _id: data.service._id, name: data.service.name, description: data.service.description })
+          const nameText = typeof data.service.name === 'string'
+            ? data.service.name
+            : (data.service.name?.[language] || data.service.name?.ar || data.service.name?.en || '')
+          const descText = typeof data.service.description === 'string'
+            ? data.service.description
+            : (data.service.description?.[language] || data.service.description?.ar || data.service.description?.en || '')
+          setService({ _id: data.service._id, name: nameText, description: descText })
         }
       } catch (e) {
         console.error('Error fetching service:', e)
