@@ -47,7 +47,7 @@ export default function LogisticsForm() {
     fromCity: string;
     toCity: string;
     shipmentType: string;
-    cargoNature: string;
+    productType: string;
     
     // الخطوة 3: تفاصيل الشحنة
     weight: string;
@@ -90,7 +90,7 @@ export default function LogisticsForm() {
       fromCity: '',
       toCity: '',
       shipmentType: '',
-      cargoNature: '',
+      productType: '',
       weight: '',
       volume: '',
       packagesCount: '',
@@ -147,7 +147,7 @@ export default function LogisticsForm() {
         return { message: isRTL ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill all required fields" };
       }
     } else if (s === 2) {
-      const ok = await trigger(["fromCountry", "toCountry", "fromCity", "toCity", "shipmentType", "cargoNature"]);
+      const ok = await trigger(["fromCountry", "toCountry", "fromCity", "toCity", "shipmentType", "productType"]);
       if (!ok) {
         setFocus("fromCountry");
         return { message: isRTL ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill all required fields" };
@@ -478,25 +478,25 @@ export default function LogisticsForm() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
-                  {isRTL ? 'طبيعة البضاعة *' : 'Cargo Nature *'}
+                  {isRTL ? 'نوع المنتج *' : 'Product Type *'}
                 </label>
                 <select
-                  {...register('cargoNature', { 
-                    required: isRTL ? 'طبيعة البضاعة مطلوبة' : 'Cargo nature is required'
+                  {...register('productType', { 
+                    required: isRTL ? 'نوع المنتج مطلوب' : 'Product type is required'
                   })}
                   className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                    errors.cargoNature ? 'border-red-500' : 'border-gray-300'
+                    errors.productType ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
                 >
-                  <option value="">{isRTL ? 'اختر طبيعة البضاعة' : 'Select cargo nature'}</option>
+                  <option value="">{isRTL ? 'اختر نوع المنتج' : 'Select product type'}</option>
                   {PRODUCT_CATEGORIES.map(cat => (
                     <option key={cat.value} value={cat.value}>{isRTL ? cat.labelAr : cat.labelEn}</option>
                   ))}
                 </select>
-                {errors.cargoNature && (
+                {errors.productType && (
                   <p className="mt-1 text-sm text-red-600" dir={isRTL ? "rtl" : "ltr"}>
-                    {errors.cargoNature.message}
+                    {errors.productType.message}
                   </p>
                 )}
               </div>
