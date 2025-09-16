@@ -45,17 +45,18 @@ export default function ServiceCard({ service }: ServiceCardProps) {
       name = String(serviceName || '').toLowerCase();
     }
     
+    const serviceId = (service as any)._id || (service as any).id;
     if (name.includes("استيراد") || name.includes("import")) {
-      return `/services/${service.id}/import-form`;
+      return `/services/${serviceId}/import-form`;
     } else if (name.includes("تصدير") || name.includes("export")) {
-      return `/services/${service.id}/export-form`;
+      return `/services/${serviceId}/export-form`;
     } else if (
       name.includes("شحن") ||
       name.includes("نقل") ||
       name.includes("logistics") ||
       name.includes("لوجستي")
     ) {
-      return `/services/${service.id}/logistics-form`;
+      return `/services/${serviceId}/logistics-form`;
     } else if (
       name.includes("تخليص") ||
       name.includes("جمرك") ||
@@ -63,10 +64,10 @@ export default function ServiceCard({ service }: ServiceCardProps) {
       name.includes("مورد") ||
       name.includes("مستورد")
     ) {
-      return `/services/${service.id}/suppliers-form`;
+      return `/services/${serviceId}/suppliers-form`;
     }
     // Default to suppliers form for other services
-    return `/services/${service.id}/suppliers-form`;
+    return `/services/${serviceId}/suppliers-form`;
   };
 
   return (
