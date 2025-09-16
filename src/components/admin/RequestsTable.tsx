@@ -568,30 +568,6 @@ export default function RequestsTable() {
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
                     الخدمات الإضافية
                   </th>
-                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
-                    التأمين
-                  </th>
-                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
-                    التتبع
-                  </th>
-                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
-                    توصيل لباب العميل
-                  </th>
-                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
-                    وكيل جمركي
-                  </th>
-                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
-                    موعد الشحن
-                  </th>
-                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
-                    الاستشارة
-                  </th>
-                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
-                    المساعدة الجمركية
-                  </th>
-                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
-                    خطة الشحن
-                  </th>
                   
                   {/* معلومات إضافية */}
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
@@ -617,7 +593,7 @@ export default function RequestsTable() {
                 {loading ? (
                   [...Array(8)].map((_, i) => (
                     <tr key={i}>
-                      {Array.from({ length: 32 }).map((__, j) => (
+                      {Array.from({ length: 25 }).map((__, j) => (
                         <td key={j} className="px-4 py-4">
                           <div className="h-4 bg-gray-100 rounded w-28 animate-pulse" />
                         </td>
@@ -626,9 +602,8 @@ export default function RequestsTable() {
                   ))
                 ) : items.length === 0 ? (
                   <tr className="">
-                    <td className="px-4 py-6 text-center" colSpan={32}>
+                    <td className="px-4 py-6 text-center" colSpan={25}>
                       {texts[language].noRequests}
-                      
                     </td>
                   </tr>
                 ) : (
@@ -752,50 +727,115 @@ export default function RequestsTable() {
                       
                       {/* الخدمات الإضافية */}
                       <td className="px-4 py-3 text-sm ">
-                        {r.additionalServices ? (
-                          <div className="flex flex-wrap gap-1">
-                            {r.additionalServices.map((service, idx) => (
-                              <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                                {service}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          r.qualityCertificates ? 'شهادات جودة' :
-                          r.packagingServices ? 'خدمات تغليف' :
-                          r.findImporters ? 'البحث عن مستوردين' :
-                          r.factoryVisits ? 'زيارات مصانع' :
-                          r.negotiationServices ? 'خدمات تفاوض' :
-                          r.productionSupervision ? 'إشراف إنتاج' :
-                          r.samples ? 'عينات' : "-"
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-sm ">
-                        {r.insuranceNeeded || "-"}
-                      </td>
-                      <td className="px-4 py-3 text-sm ">
-                        {r.tracking ? 'نعم' : 'لا'}
-                      </td>
-                      <td className="px-4 py-3 text-sm ">
-                        {r.doorToDoor ? 'نعم' : 'لا'}
-                      </td>
-                      <td className="px-4 py-3 text-sm ">
-                        {r.customsAgent ? 'نعم' : 'لا'}
-                      </td>
-                      <td className="px-4 py-3 text-sm ">
-                        {r.shippingUrgency ? (
-                          r.shippingUrgency === 'urgent' ? 'مستعجل' :
-                          r.shippingUrgency === 'normal' ? 'عادي' : r.shippingUrgency
-                        ) : "-"}
-                      </td>
-                      <td className="px-4 py-3 text-sm ">
-                        {r.consultationNeeded ? 'نعم' : 'لا'}
-                      </td>
-                      <td className="px-4 py-3 text-sm ">
-                        {r.customsAssistance ? 'نعم' : 'لا'}
-                      </td>
-                      <td className="px-4 py-3 text-sm ">
-                        {r.hasShippingPlan === true ? 'نعم' : r.hasShippingPlan === false ? 'لا' : '-'}
+                        <div className="flex flex-wrap gap-1">
+                          {/* الخدمات من additionalServices */}
+                          {r.additionalServices && r.additionalServices.map((service, idx) => (
+                            <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                              {service}
+                            </span>
+                          ))}
+                          
+                          {/* خدمات الاستيراد */}
+                          {r.qualityCertificates && (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                              شهادات جودة
+                            </span>
+                          )}
+                          {r.packagingServices && (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                              خدمات تغليف
+                            </span>
+                          )}
+                          {r.findImporters && (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                              البحث عن مستوردين
+                            </span>
+                          )}
+                          {r.factoryVisits && (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                              زيارات مصانع
+                            </span>
+                          )}
+                          {r.negotiationServices && (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                              خدمات تفاوض
+                            </span>
+                          )}
+                          {r.productionSupervision && (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                              إشراف إنتاج
+                            </span>
+                          )}
+                          {r.samples && (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                              عينات
+                            </span>
+                          )}
+                          
+                          {/* خدمات الشحن واللوجستيات */}
+                          {r.insuranceNeeded && (
+                            <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded">
+                              التأمين: {r.insuranceNeeded}
+                            </span>
+                          )}
+                          {r.tracking && (
+                            <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded">
+                              التتبع
+                            </span>
+                          )}
+                          {r.doorToDoor && (
+                            <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded">
+                              توصيل لباب العميل
+                            </span>
+                          )}
+                          {r.customsAgent && (
+                            <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded">
+                              وكيل جمركي
+                            </span>
+                          )}
+                          {r.shippingUrgency && (
+                            <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded">
+                              موعد الشحن: {r.shippingUrgency === 'urgent' ? 'مستعجل' : 'عادي'}
+                            </span>
+                          )}
+                          
+                          {/* خدمات أخرى */}
+                          {r.consultationNeeded && (
+                            <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">
+                              الاستشارة
+                            </span>
+                          )}
+                          {r.customsAssistance && (
+                            <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">
+                              المساعدة الجمركية
+                            </span>
+                          )}
+                          {r.hasShippingPlan === true && (
+                            <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">
+                              خطة الشحن
+                            </span>
+                          )}
+                          
+                          {/* إذا لم توجد أي خدمات */}
+                          {!r.additionalServices && 
+                           !r.qualityCertificates && 
+                           !r.packagingServices && 
+                           !r.findImporters && 
+                           !r.factoryVisits && 
+                           !r.negotiationServices && 
+                           !r.productionSupervision && 
+                           !r.samples && 
+                           !r.insuranceNeeded && 
+                           !r.tracking && 
+                           !r.doorToDoor && 
+                           !r.customsAgent && 
+                           !r.shippingUrgency && 
+                           !r.consultationNeeded && 
+                           !r.customsAssistance && 
+                           r.hasShippingPlan !== true && (
+                            <span className="text-gray-500 text-xs">-</span>
+                          )}
+                        </div>
                       </td>
                       
                       {/* معلومات إضافية */}
