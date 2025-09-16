@@ -4,6 +4,7 @@ import { PRODUCT_CATEGORY_VALUES } from '@/lib/constants/productCategories'
 // Common/base fields required for any service request
 export const baseRequestSchema = z.object({
   customerName: z.string().min(1, 'اسم العميل مطلوب').max(100),
+  companyName: z.string().min(1, 'اسم الشركة مطلوب').max(100),
   email: z.string().min(1, 'البريد الإلكتروني مطلوب').email('البريد الإلكتروني غير صحيح'),
   phone: z.string().min(1, 'رقم الهاتف مطلوب').regex(/^[0-9+\-\s()]+$/, 'رقم الهاتف غير صحيح'),
   serviceId: z.string().min(1, 'الخدمة مطلوبة'),

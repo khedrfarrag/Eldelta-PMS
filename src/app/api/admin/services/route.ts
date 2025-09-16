@@ -35,11 +35,22 @@ export async function GET(request: NextRequest) {
       filter.status = status
     }
     
-    // Add search filter
+    // Add search filter - support both string and localized object fields
     if (search && search.trim()) {
+      const regex = { $regex: search, $options: 'i' }
       filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        // String fields
+        { name: regex },
+        { description: regex },
+        // Localized object fields
+        { 'name.ar': regex },
+        { 'name.en': regex },
+        { 'description.ar': regex },
+        { 'description.en': regex },
+        // Features array (either strings or localized objects)
+        { features: regex },
+        { 'features.ar': regex },
+        { 'features.en': regex },
       ]
     }
 
@@ -137,10 +148,11 @@ export async function POST(request: NextRequest) {
     const result = await db.collection('services').insertOne(doc)
 
     if (result.insertedId) {
+      const created = await db.collection('services').findOne({ _id: result.insertedId })
       return NextResponse.json({
         success: true,
         message: 'Service created successfully',
-        serviceId: result.insertedId
+        service: created
       })
     } else {
       return NextResponse.json(

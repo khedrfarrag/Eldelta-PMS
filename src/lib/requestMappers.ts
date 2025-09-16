@@ -3,6 +3,7 @@ import { BaseRequest, ExportRequest, ImportRequest, LogisticsRequest, SuppliersR
 export function mapImportData(values: any, serviceId: string, serviceName?: string) : ImportRequest {
   return {
     customerName: values.customerName,
+    companyName: values.companyName,
     email: values.email,
     phone: values.phone,
     serviceId,

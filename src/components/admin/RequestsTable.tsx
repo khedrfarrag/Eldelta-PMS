@@ -12,6 +12,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 export type RequestItem = {
   _id: string;
   customerName?: string;
+  companyName?: string;
   email?: string;
   phone?: string;
   serviceId?: string;
@@ -497,6 +498,9 @@ export default function RequestsTable() {
                     العميل
                   </th>
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    الشركة
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
                     البريد
                   </th>
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
@@ -604,6 +608,9 @@ export default function RequestsTable() {
                       <td className="px-4 py-3 text-xs  break-all">{r._id}</td>
                       <td className="px-4 py-3 text-sm ">
                         {r.customerName || "غير معروف"}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.companyName || "-"}
                       </td>
                       <td className="px-4 py-3 text-sm  break-all max-w-[180px]">
                         {r.email || "-"}
