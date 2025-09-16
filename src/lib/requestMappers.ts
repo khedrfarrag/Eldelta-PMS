@@ -36,6 +36,7 @@ export function mapImportData(values: any, serviceId: string, serviceName?: stri
 export function mapExportData(values: any, serviceId: string, serviceName?: string) : ExportRequest {
   return {
     customerName: values.customerName,
+    companyName: values.companyName,
     email: values.email,
     phone: values.phone,
     serviceId,
@@ -68,6 +69,7 @@ export function mapLogisticsData(values: any, serviceId: string, serviceName?: s
   const total = values.totalValue ?? values.estimatedValue
   return {
     customerName: values.customerName,
+    companyName: values.companyName,
     email: values.email,
     phone: values.phone,
     serviceId,
@@ -101,6 +103,7 @@ export function mapSuppliersData(values: any, serviceId: string, serviceName?: s
   const total = values.totalValue ?? values.estimatedValue
   return {
     customerName: values.customerName,
+    companyName: values.companyName,
     email: values.email,
     phone: values.phone,
     serviceId,
