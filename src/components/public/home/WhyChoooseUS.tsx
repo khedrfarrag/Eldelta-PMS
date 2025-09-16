@@ -5,7 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import imgman from "../../../../public/images/whychoosUs/ExperianseMan.svg";
 import imgmap from "../../../../public/images/whychoosUs/maping.svg";
 import imgcompony from "../../../../public/images/whychoosUs/eldita.svg";
-import immgGirl from "../../../../public/images/whychoosUs/imgGirl.png";
+// Use public path string instead of static import to avoid Netlify image optimization issues
 import imgship from "../../../../public/images/whychoosUs/imgship.svg";
 
 export default function WhyChoooseUS() {
@@ -288,13 +288,14 @@ export default function WhyChoooseUS() {
                 {/* Main Person Image */}
                 <div className="relative z-10">
                   <Image
-                    src={immgGirl}
+                    src={"/images/whychoosUs/imgGirl.png"}
                     alt={isRTL ? "خبير تجاري" : "Business Expert"}
                     width={200}
                     height={300}
                     className="w-full h-full object-cover rounded-xl"
                     loading="lazy"
                     sizes="(max-width:768px) 100vw, 33vw"
+                    unoptimized
                   />
                 </div>
               </div>
