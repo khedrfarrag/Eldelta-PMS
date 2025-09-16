@@ -10,6 +10,7 @@ export function mapImportData(values: any, serviceId: string, serviceName?: stri
     serviceType: 'import',
     productType: values.productType,
     productSpecifications: values.productSpecifications,
+    productSpecsPdfUrl: values.productSpecsPdfUrl,
     estimatedQuantity: String(values.estimatedQuantity ?? ''),
     exportCountry: values.exportCountry,
     destinationCountry: values.destinationCountry,
@@ -26,6 +27,7 @@ export function mapImportData(values: any, serviceId: string, serviceName?: stri
     heardAboutUs: values.heardAboutUs,
     readyDate: values.readyDate,
     desiredArrivalDate: values.desiredArrivalDate,
+    hasShippingPlan: values.hasShippingPlan === 'true' ? true : values.hasShippingPlan === 'false' ? false : undefined,
     insuranceNeeded: values.additionalServices?.includes('تأمين') ? 'نعم' : 'لا',
   }
 }

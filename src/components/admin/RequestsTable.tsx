@@ -39,6 +39,8 @@ export type RequestItem = {
   customsAssistance?: boolean;
   consultationNeeded?: boolean;
   additionalServices?: string[];
+  productSpecsPdfUrl?: string;
+  hasShippingPlan?: boolean;
   
   // حقول التصدير
   productDetails?: string;
@@ -515,6 +517,9 @@ export default function RequestsTable() {
                     مواصفات المنتج
                   </th>
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    ملف PDF
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
                     الكمية
                   </th>
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
@@ -551,6 +556,9 @@ export default function RequestsTable() {
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
                     المساعدة الجمركية
                   </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    خطة الشحن
+                  </th>
                   
                   {/* معلومات إضافية */}
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
@@ -576,7 +584,7 @@ export default function RequestsTable() {
                 {loading ? (
                   [...Array(8)].map((_, i) => (
                     <tr key={i}>
-                      {Array.from({ length: 22 }).map((__, j) => (
+                      {Array.from({ length: 24 }).map((__, j) => (
                         <td key={j} className="px-4 py-4">
                           <div className="h-4 bg-gray-100 rounded w-28 animate-pulse" />
                         </td>
@@ -585,7 +593,7 @@ export default function RequestsTable() {
                   ))
                 ) : items.length === 0 ? (
                   <tr className="">
-                    <td className="px-4 py-6 text-center" colSpan={22}>
+                    <td className="px-4 py-6 text-center" colSpan={24}>
                       {texts[language].noRequests}
                     </td>
                   </tr>
@@ -631,6 +639,21 @@ export default function RequestsTable() {
                         title={r.productSpecifications}
                       >
                         {r.productSpecifications || "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.productSpecsPdfUrl ? (
+                          <a
+                            href={r.productSpecsPdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded hover:bg-blue-200 transition-colors"
+                          >
+                            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            تحميل
+                          </a>
+                        ) : "-"}
                       </td>
                       <td className="px-4 py-3 text-sm ">
                         {r.estimatedQuantity || r.expectedQuantity || "-"}
@@ -700,6 +723,9 @@ export default function RequestsTable() {
                       </td>
                       <td className="px-4 py-3 text-sm ">
                         {r.customsAssistance ? 'نعم' : 'لا'}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.hasShippingPlan === true ? 'نعم' : r.hasShippingPlan === false ? 'لا' : '-'}
                       </td>
                       
                       {/* معلومات إضافية */}

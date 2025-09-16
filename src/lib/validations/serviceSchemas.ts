@@ -28,6 +28,7 @@ export const baseRequestSchema = z.object({
 export const importRequestSchema = baseRequestSchema.extend({
   productType: z.enum(PRODUCT_CATEGORY_VALUES as unknown as [string, ...string[]]),
   productSpecifications: z.string().min(1, 'مواصفات المنتج مطلوبة'),
+  productSpecsPdfUrl: z.string().url('رابط PDF غير صحيح').optional(),
   estimatedQuantity: z.string().min(1, 'الكمية مطلوبة').regex(/^[0-9]+$/, 'الكمية يجب أن تكون أرقام فقط'),
   exportCountry: z.string().min(1, 'بلد التصدير مطلوب'),
   destinationCountry: z.string().min(1, 'بلد الوجهة مطلوب'),
@@ -39,6 +40,7 @@ export const importRequestSchema = baseRequestSchema.extend({
   consultationNeeded: z.boolean().optional(),
   additionalServices: z.array(z.string()).optional(),
   commercialRecord: z.string().optional(),
+  hasShippingPlan: z.boolean().optional(),
 })
 
 // Export service specific schema

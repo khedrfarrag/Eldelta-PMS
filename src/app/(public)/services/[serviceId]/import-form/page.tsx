@@ -33,6 +33,8 @@ export default function ImportForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [step, setStep] = useState<Step>(1);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [uploadedPdfUrl, setUploadedPdfUrl] = useState<string | null>(null);
 
   type FormValues = {
     // الخطوة 1: البيانات الأساسية
@@ -44,6 +46,7 @@ export default function ImportForm() {
     // الخطوة 2: بيانات المنتج
     productType: string;
     productSpecifications: string;
+    productSpecsPdfUrl?: string;
     estimatedQuantity: string;
     importFrequency: 'once' | 'monthly' | 'quarterly' | 'yearly';
     
@@ -55,6 +58,7 @@ export default function ImportForm() {
     preferredDeliveryMethod: string;
     readyDate: string;
     desiredArrivalDate: string;
+    hasShippingPlan?: boolean;
     
     // الخطوة 4: الخدمات الإضافية
     additionalServices: string[];
@@ -174,6 +178,44 @@ export default function ImportForm() {
       ? currentServices.filter(s => s !== service)
       : [...currentServices, service];
     setValue('additionalServices', newServices);
+  };
+
+  const handleFileUpload = async (file: File) => {
+    if (file.type !== 'application/pdf') {
+      setError(isRTL ? 'يجب أن يكون الملف بصيغة PDF' : 'File must be a PDF');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB
+      setError(isRTL ? 'حجم الملف يجب أن يكون أقل من 10 ميجابايت' : 'File size must be less than 10MB');
+      return;
+    }
+
+    setUploadingPdf(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setUploadedPdfUrl(result.url);
+        setValue('productSpecsPdfUrl', result.url);
+      } else {
+        setError(result.error || (isRTL ? 'فشل في رفع الملف' : 'Failed to upload file'));
+      }
+    } catch (error) {
+      setError(isRTL ? 'حدث خطأ أثناء رفع الملف' : 'Error uploading file');
+    } finally {
+      setUploadingPdf(false);
+    }
   };
 
   const onSubmit = async (vals: FormValues) => {
@@ -405,6 +447,64 @@ export default function ImportForm() {
                 </p>
               )}
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                {isRTL ? 'رفع ملف PDF للمواصفات (اختياري)' : 'Upload PDF file for specifications (optional)'}
+              </label>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(file);
+                  }}
+                  className="hidden"
+                  id="pdf-upload"
+                  disabled={uploadingPdf}
+                />
+                <label
+                  htmlFor="pdf-upload"
+                  className={`cursor-pointer flex flex-col items-center space-y-2 ${
+                    uploadingPdf ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {uploadingPdf ? (
+                    <>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                      <p className="text-sm text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+                        {isRTL ? 'جاري الرفع...' : 'Uploading...'}
+                      </p>
+                    </>
+                  ) : uploadedPdfUrl ? (
+                    <>
+                      <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-sm text-green-600" dir={isRTL ? "rtl" : "ltr"}>
+                        {isRTL ? 'تم رفع الملف بنجاح' : 'File uploaded successfully'}
+                      </p>
+                      <p className="text-xs text-gray-500" dir={isRTL ? "rtl" : "ltr"}>
+                        {uploadedPdfUrl.split('/').pop()}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                      <p className="text-sm text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+                        {isRTL ? 'اضغط لرفع ملف PDF' : 'Click to upload PDF file'}
+                      </p>
+                      <p className="text-xs text-gray-500" dir={isRTL ? "rtl" : "ltr"}>
+                        {isRTL ? 'الحد الأقصى 10 ميجابايت' : 'Max 10MB'}
+                      </p>
+                    </>
+                  )}
+                </label>
+              </div>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -614,6 +714,21 @@ export default function ImportForm() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                {isRTL ? 'هل لديك موعد محدد للشحن أو خطة زمنية؟' : 'Do you have a specific shipping schedule or timeline?'}
+              </label>
+              <select
+                {...register('hasShippingPlan')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                dir={isRTL ? "rtl" : "ltr"}
+              >
+                <option value="">{isRTL ? 'اختر...' : 'Select...'}</option>
+                <option value="true">{isRTL ? 'نعم' : 'Yes'}</option>
+                <option value="false">{isRTL ? 'لا' : 'No'}</option>
+              </select>
             </div>
           </div>
         );
