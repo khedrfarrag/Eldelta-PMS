@@ -558,9 +558,6 @@ export default function RequestsTable() {
                     نوع الشحنة
                   </th>
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
-                    نوع المنتج
-                  </th>
-                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
                     طريقة الشحن
                   </th>
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
@@ -620,7 +617,7 @@ export default function RequestsTable() {
                 {loading ? (
                   [...Array(8)].map((_, i) => (
                     <tr key={i}>
-                      {Array.from({ length: 33 }).map((__, j) => (
+                      {Array.from({ length: 32 }).map((__, j) => (
                         <td key={j} className="px-4 py-4">
                           <div className="h-4 bg-gray-100 rounded w-28 animate-pulse" />
                         </td>
@@ -629,8 +626,9 @@ export default function RequestsTable() {
                   ))
                 ) : items.length === 0 ? (
                   <tr className="">
-                    <td className="px-4 py-6 text-center" colSpan={33}>
+                    <td className="px-4 py-6 text-center" colSpan={32}>
                       {texts[language].noRequests}
+                      
                     </td>
                   </tr>
                 ) : (
@@ -671,7 +669,8 @@ export default function RequestsTable() {
                       
                       {/* معلومات المنتج */}
                       <td className="px-4 py-3 text-sm ">
-                        {getCategoryLabelAr(r.productType) || "-"}
+                        {/* {getCategoryLabelAr(r.productType) || "-"} */}
+                        {getCategoryLabelAr(r.productType || r.cargoNature) || "-"}
                       </td>
                       <td
                         className="px-4 py-3 text-sm  max-w-[200px] sm:max-w-[320px] break-words truncate"
@@ -733,9 +732,6 @@ export default function RequestsTable() {
                           r.shipmentType === 'land' ? 'شحن بري' :
                           r.shipmentType === 'express' ? 'سريع' : r.shipmentType
                         ) : "-"}
-                      </td>
-                      <td className="px-4 py-3 text-sm ">
-                        {getCategoryLabelAr(r.productType || r.cargoNature) || "-"}
                       </td>
                       <td className="px-4 py-3 text-sm ">
                         {r.preferredShippingMethod ? (
