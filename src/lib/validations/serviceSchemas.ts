@@ -4,6 +4,7 @@ import { PRODUCT_CATEGORY_VALUES } from '@/lib/constants/productCategories'
 // Common/base fields required for any service request
 export const baseRequestSchema = z.object({
   customerName: z.string().min(1, 'اسم العميل مطلوب').max(100),
+  companyName: z.string().min(1, 'اسم الشركة مطلوب').max(100),
   email: z.string().min(1, 'البريد الإلكتروني مطلوب').email('البريد الإلكتروني غير صحيح'),
   phone: z.string().min(1, 'رقم الهاتف مطلوب').regex(/^[0-9+\-\s()]+$/, 'رقم الهاتف غير صحيح'),
   serviceId: z.string().min(1, 'الخدمة مطلوبة'),
@@ -28,6 +29,7 @@ export const baseRequestSchema = z.object({
 export const importRequestSchema = baseRequestSchema.extend({
   productType: z.enum(PRODUCT_CATEGORY_VALUES as unknown as [string, ...string[]]),
   productSpecifications: z.string().min(1, 'مواصفات المنتج مطلوبة'),
+  productSpecsPdfUrl: z.string().url('رابط PDF غير صحيح').optional(),
   estimatedQuantity: z.string().min(1, 'الكمية مطلوبة').regex(/^[0-9]+$/, 'الكمية يجب أن تكون أرقام فقط'),
   exportCountry: z.string().min(1, 'بلد التصدير مطلوب'),
   destinationCountry: z.string().min(1, 'بلد الوجهة مطلوب'),
@@ -39,6 +41,7 @@ export const importRequestSchema = baseRequestSchema.extend({
   consultationNeeded: z.boolean().optional(),
   additionalServices: z.array(z.string()).optional(),
   commercialRecord: z.string().optional(),
+  hasShippingPlan: z.boolean().optional(),
 })
 
 // Export service specific schema

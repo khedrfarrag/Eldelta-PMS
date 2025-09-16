@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import clientPromise from '@/lib/mongodb'
 import { verifyAdmin, verifySuperAdmin } from '@/lib/auth'
 import { ObjectId } from 'mongodb'
-import { createServiceWithTranslations, translateService } from '@/lib/translationService'
+// Removed runtime translation. Optionally keep create-on-write later.
 
 // GET - Get all services (admin only)
 export async function GET(request: NextRequest) {
@@ -35,11 +35,22 @@ export async function GET(request: NextRequest) {
       filter.status = status
     }
     
-    // Add search filter
+    // Add search filter - support both string and localized object fields
     if (search && search.trim()) {
+      const regex = { $regex: search, $options: 'i' }
       filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        // String fields
+        { name: regex },
+        { description: regex },
+        // Localized object fields
+        { 'name.ar': regex },
+        { 'name.en': regex },
+        { 'description.ar': regex },
+        { 'description.en': regex },
+        // Features array (either strings or localized objects)
+        { features: regex },
+        { 'features.ar': regex },
+        { 'features.en': regex },
       ]
     }
 
@@ -54,14 +65,23 @@ export async function GET(request: NextRequest) {
     // Get total count
     const total = await db.collection('services').countDocuments(filter)
 
-    // Translate services to requested language
-    const translatedServices = services.map((service: any) => 
-      translateService(service, lang as 'ar' | 'en')
-    )
+    // Map by stored language fields
+    const mapped = services.map((s: any) => ({
+      _id: s._id,
+      name: typeof s.name === 'object' ? (s.name[lang] || s.name.ar || s.name.en || '') : s.name,
+      description: typeof s.description === 'object' ? (s.description[lang] || s.description.ar || s.description.en || '') : s.description,
+      features: Array.isArray(s.features)
+        ? s.features.map((f: any) => (typeof f === 'object' ? (f[lang] || f.ar || f.en || '') : f))
+        : [],
+      status: s.status,
+      order: s.order,
+      createdAt: s.createdAt,
+      updatedAt: s.updatedAt,
+    }))
 
     return NextResponse.json({
       success: true,
-      services: translatedServices,
+      services: mapped,
       pagination: {
         CurrentPage: page,
         PageSize: limit,
@@ -114,26 +134,25 @@ export async function POST(request: NextRequest) {
       serviceOrder = lastService ? lastService.order + 1 : 1
     }
 
-    // Create service with translations using hybrid approach
-    const newService = await createServiceWithTranslations({
+    // Store as provided (admin supplies localized content per policy)
+    const doc = {
       name,
       description,
       features,
       status: status || 'active',
-      order: serviceOrder
-    })
-
-    const result = await db.collection('services').insertOne({
-      ...newService,
+      order: serviceOrder,
       createdAt: new Date(),
-      updatedAt: new Date()
-    })
+      updatedAt: new Date(),
+    }
+
+    const result = await db.collection('services').insertOne(doc)
 
     if (result.insertedId) {
+      const created = await db.collection('services').findOne({ _id: result.insertedId })
       return NextResponse.json({
         success: true,
         message: 'Service created successfully',
-        serviceId: result.insertedId
+        service: created
       })
     } else {
       return NextResponse.json(

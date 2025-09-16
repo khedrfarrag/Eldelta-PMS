@@ -130,19 +130,18 @@ export default function ServiceFormWizard() {
         const data = await res.json()
         if (!isMounted) return
         if (data?.service) {
-          setService({ _id: data.service._id, name: data.service.name, description: data.service.description })
-          const detectedType = inferServiceType(data.service.name)
+          const nameText = typeof data.service.name === 'string'
+            ? data.service.name
+            : (data.service.name?.[language] || data.service.name?.ar || data.service.name?.en || '')
+          const descText = typeof data.service.description === 'string'
+            ? data.service.description
+            : (data.service.description?.[language] || data.service.description?.ar || data.service.description?.en || '')
+          setService({ _id: data.service._id, name: nameText, description: descText })
+          const detectedType = inferServiceType(nameText)
           setServiceType(detectedType)
           
           // Redirect to the appropriate specialized form
-          let serviceName = '';
-          if (typeof data.service.name === 'string') {
-            serviceName = data.service.name.toLowerCase();
-          } else if (data.service.name && typeof data.service.name === 'object') {
-            serviceName = (data.service.name.ar || data.service.name.en || '').toLowerCase();
-          } else {
-            serviceName = String(data.service.name || '').toLowerCase();
-          }
+          let serviceName = nameText.toLowerCase();
           
           if (serviceName.includes('استيراد') || serviceName.includes('import')) {
             router.replace(`/services/${serviceId}/import-form`)
