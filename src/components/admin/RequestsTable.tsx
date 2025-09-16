@@ -530,6 +530,17 @@ export default function RequestsTable() {
                     القيمة الإجمالية
                   </th>
                   
+                  {/* تفاصيل الشحنة */}
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    الوزن (كجم)
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    الحجم (م³)
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    عدد الطرود
+                  </th>
+                  
                   {/* معلومات الشحن */}
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
                     من
@@ -538,10 +549,16 @@ export default function RequestsTable() {
                     إلى
                   </th>
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    الميناء/المدينة (من)
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    الميناء/المدينة (إلى)
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
                     نوع الشحنة
                   </th>
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
-                    طبيعة البضاعة
+                    نوع المنتج
                   </th>
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
                     طريقة الشحن
@@ -553,6 +570,21 @@ export default function RequestsTable() {
                   {/* الخدمات الإضافية */}
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
                     الخدمات الإضافية
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    التأمين
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    التتبع
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    توصيل لباب العميل
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    وكيل جمركي
+                  </th>
+                  <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
+                    موعد الشحن
                   </th>
                   <th className=" px-4 py-3 text-right text-xs font-medium  uppercase tracking-wider">
                     الاستشارة
@@ -588,7 +620,7 @@ export default function RequestsTable() {
                 {loading ? (
                   [...Array(8)].map((_, i) => (
                     <tr key={i}>
-                      {Array.from({ length: 24 }).map((__, j) => (
+                      {Array.from({ length: 33 }).map((__, j) => (
                         <td key={j} className="px-4 py-4">
                           <div className="h-4 bg-gray-100 rounded w-28 animate-pulse" />
                         </td>
@@ -597,7 +629,7 @@ export default function RequestsTable() {
                   ))
                 ) : items.length === 0 ? (
                   <tr className="">
-                    <td className="px-4 py-6 text-center" colSpan={24}>
+                    <td className="px-4 py-6 text-center" colSpan={33}>
                       {texts[language].noRequests}
                     </td>
                   </tr>
@@ -669,12 +701,29 @@ export default function RequestsTable() {
                         {r.totalValue || "-"}
                       </td>
                       
+                      {/* تفاصيل الشحنة */}
+                      <td className="px-4 py-3 text-sm ">
+                        {r.weight || "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.volume || "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.packagesCount || "-"}
+                      </td>
+                      
                       {/* معلومات الشحن */}
                       <td className="px-4 py-3 text-sm ">
                         {r.fromCountry || r.exportCountry || "-"}
                       </td>
                       <td className="px-4 py-3 text-sm ">
                         {r.toCountry || r.destinationCountry || "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.fromCity || "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.toCity || "-"}
                       </td>
                       <td className="px-4 py-3 text-sm ">
                         {r.shipmentType ? (
@@ -686,7 +735,7 @@ export default function RequestsTable() {
                         ) : "-"}
                       </td>
                       <td className="px-4 py-3 text-sm ">
-                        {getCategoryLabelAr(r.cargoNature) || "-"}
+                        {getCategoryLabelAr(r.productType || r.cargoNature) || "-"}
                       </td>
                       <td className="px-4 py-3 text-sm ">
                         {r.preferredShippingMethod ? (
@@ -724,6 +773,24 @@ export default function RequestsTable() {
                           r.productionSupervision ? 'إشراف إنتاج' :
                           r.samples ? 'عينات' : "-"
                         )}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.insuranceNeeded || "-"}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.tracking ? 'نعم' : 'لا'}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.doorToDoor ? 'نعم' : 'لا'}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.customsAgent ? 'نعم' : 'لا'}
+                      </td>
+                      <td className="px-4 py-3 text-sm ">
+                        {r.shippingUrgency ? (
+                          r.shippingUrgency === 'urgent' ? 'مستعجل' :
+                          r.shippingUrgency === 'normal' ? 'عادي' : r.shippingUrgency
+                        ) : "-"}
                       </td>
                       <td className="px-4 py-3 text-sm ">
                         {r.consultationNeeded ? 'نعم' : 'لا'}

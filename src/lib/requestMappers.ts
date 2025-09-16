@@ -80,14 +80,16 @@ export function mapLogisticsData(values: any, serviceId: string, serviceName?: s
     fromCity: values.fromCity,
     toCity: values.toCity,
     shipmentType: values.shipmentType,
-    cargoNature: values.cargoNature,
+    productType: values.productType,
     weight: values.weight,
     volume: values.volume,
     packagesCount: values.packagesCount,
     totalValue: total != null ? String(total) : undefined,
     doorToDoor: Boolean(values.doorToDoor),
-    tracking: Boolean(values.tracking),
+    tracking: Boolean(values.trackingNeeded),
     customsAgent: Boolean(values.customsAgent),
+    insuranceNeeded: values.insuranceNeeded ? 'نعم' : 'لا',
+    shippingUrgency: values.shippingUrgency,
     preferredShippingMethod: values.preferredShippingMethod,
     preferredDeliveryMethod: values.preferredDeliveryMethod,
     notes: values.notes,
@@ -95,7 +97,6 @@ export function mapLogisticsData(values: any, serviceId: string, serviceName?: s
     heardAboutUs: values.heardAboutUs,
     readyDate: values.readyDate,
     desiredArrivalDate: values.desiredArrivalDate,
-    insuranceNeeded: values.insuranceNeeded,
   }
 }
 
