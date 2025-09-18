@@ -18,8 +18,8 @@ export const revalidate = 3600
 
 type Params = { locale: LocaleCode; slug: string }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-    const { locale, slug } = params
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+    const { locale, slug } = await params
     const meta = getPostMeta(locale, slug)
     if (!meta) return {}
     const fm = meta.frontmatter
@@ -46,8 +46,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     }
 }
 
-export default function BlogPostPage({ params }: { params: Params }) {
-	const { locale, slug } = params
+export default async function BlogPostPage({ params }: { params: Promise<Params> }) {
+    const { locale, slug } = await params
 	if (!['en', 'ar'].includes(locale)) return notFound()
 
 	const meta = getPostMeta(locale, slug)

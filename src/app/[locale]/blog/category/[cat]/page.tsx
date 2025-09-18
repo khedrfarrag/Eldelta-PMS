@@ -7,16 +7,16 @@ import type { LocaleCode } from '@/lib/blog/types'
 
 type Params = { locale: LocaleCode; cat: string }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-    const { locale, cat } = params
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+    const { locale, cat } = await params
     return {
         title: locale === 'ar' ? `تصنيف: ${cat}` : `Category: ${cat}`,
         description: locale === 'ar' ? `مقالات ضمن تصنيف ${cat}` : `Posts in category ${cat}`,
     }
 }
 
-export default function CategoryPage({ params }: { params: Params }) {
-    const { locale, cat } = params
+export default async function CategoryPage({ params }: { params: Promise<Params> }) {
+	const { locale, cat } = await params
     if (!['en','ar'].includes(locale)) return notFound()
     const posts = readAllPostsMeta(locale).filter(p => (p.frontmatter.category || '').toLowerCase() === cat.toLowerCase())
     return (

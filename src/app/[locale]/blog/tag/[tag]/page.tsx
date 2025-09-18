@@ -7,16 +7,16 @@ import type { LocaleCode } from '@/lib/blog/types'
 
 type Params = { locale: LocaleCode; tag: string }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-    const { locale, tag } = params
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+    const { locale, tag } = await params
     return {
         title: locale === 'ar' ? `وسم: ${tag}` : `Tag: ${tag}`,
         description: locale === 'ar' ? `مقالات تحت وسم ${tag}` : `Posts tagged ${tag}`,
     }
 }
 
-export default function TagPage({ params }: { params: Params }) {
-    const { locale, tag } = params
+export default async function TagPage({ params }: { params: Promise<Params> }) {
+	const { locale, tag } = await params
     if (!['en','ar'].includes(locale)) return notFound()
     const posts = readAllPostsMeta(locale).filter(p => (p.frontmatter.tags || []).map(t => t.toLowerCase()).includes(tag.toLowerCase()))
     return (

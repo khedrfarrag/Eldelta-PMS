@@ -11,8 +11,8 @@ type Params = { locale: LocaleCode }
 
 export const revalidate = 3600
 
-export default function BlogIndex({ params }: { params: Params }) {
-	const { locale } = params
+export default async function BlogIndex({ params }: { params: Promise<Params> }) {
+	const { locale } = await params
 	if (!['en', 'ar'].includes(locale)) return notFound()
 	const posts = readAllPostsMeta(locale)
 

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { testEmailConnection } from '@/lib/email'
 
 export async function GET(request: NextRequest) {
@@ -19,7 +22,7 @@ export async function GET(request: NextRequest) {
     // Database health check
     const dbStartTime = Date.now()
     try {
-      const client = await clientPromise
+    const client = await getMongoClient()
       await client.db().admin().ping()
       const dbEndTime = Date.now()
       
@@ -99,7 +102,7 @@ export async function POST(request: NextRequest) {
     
     switch (service) {
       case 'database':
-        const client = await clientPromise
+        const client = await getMongoClient()
         const dbStats = await client.db().stats()
         return NextResponse.json({
           status: 'healthy',
