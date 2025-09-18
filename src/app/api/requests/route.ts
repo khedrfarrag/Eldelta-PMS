@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { verifyAdmin } from '@/lib/auth'
 import { ObjectId } from 'mongodb'
 import { 
@@ -25,7 +28,7 @@ export async function POST(request: NextRequest) {
     // Determine service type (from payload or inferred from service name later)
     const providedServiceType = raw?.serviceType as string | undefined
     
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
     
     // Validate serviceId format first
@@ -177,7 +180,7 @@ export async function GET(request: NextRequest) {
       )
     }
     
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
     
     // Get query parameters

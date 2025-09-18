@@ -285,7 +285,7 @@ export default function ContactInfo() {
                       </Link>
 
                       {/*  */}
-                      <Link href={"https://www.instagram.com/delta_import_and_export?igsh=ajFjMmhrbDdrcTI0&utm_source=qr "}>
+                      <Link href={"https://www.instagram.com/delta_import_and_export?igsh=ajFjMmhrbDdrcTI0&utm_source=qr"}>
                         <div className="w-9 h-9 bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-600 dark:to-pink-600 rounded-full flex items-center justify-center cursor-pointer hover:from-purple-600 hover:to-pink-600 dark:hover:from-purple-700 dark:hover:to-pink-700 transition-all duration-200">
                           <i className="fa-brands fa-instagram text-white text-sm"></i>
                         </div>

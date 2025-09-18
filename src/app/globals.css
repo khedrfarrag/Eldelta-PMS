@@ -128,4 +128,106 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
+
+  /* Blog Scoped Theme */
+  .blog-theme {
+    --blog-bg: #ffffff;
+    --blog-fg: #0f172a;
+    --blog-muted: #64748b;
+    --blog-primary: var(--color-primary, #0e7490);
+    background: var(--blog-bg);
+    color: var(--blog-fg);
+  }
+
+  .dark .blog-theme {
+    --blog-bg: #0b1220;
+    --blog-fg: #e5e7eb;
+    --blog-muted: #a1a1aa;
+    --blog-primary: var(--color-primary, #22d3ee);
+  }
+
+  .blog-theme .prose a {
+    color: var(--blog-primary);
+  }
+
+  .blog-theme .prose h1,
+  .blog-theme .prose h2,
+  .blog-theme .prose h3 {
+    scroll-margin-top: 6rem;
+  }
+
+  .blog-theme .prose img {
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .blog-theme .prose blockquote {
+    border-inline-start: 3px solid var(--blog-primary);
+    background: rgba(14, 116, 144, 0.06);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+  }
+}
+
+/* Custom Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+.animate-fade-in-left {
+  animation: fadeInLeft 0.4s ease-out forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.4s ease-out forwards;
 }

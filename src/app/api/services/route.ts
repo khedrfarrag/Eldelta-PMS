@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 // Translation at read-time is removed. Services store {ar,en} and we select by lang.
 
 // GET - Get all services (public) with language support
 export async function GET(request: NextRequest) {
   try {
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
     
     // Get query parameters
