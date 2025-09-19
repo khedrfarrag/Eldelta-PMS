@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { pagination, error } from '@/lib/http'
 import { verifySuperAdmin } from '@/lib/auth'
 
@@ -16,7 +19,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20', 10)
     const skip = (page - 1) * limit
 
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
 
     const filter = { status: 'verified' }

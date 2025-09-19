@@ -1,7 +1,9 @@
+import { env } from '@/config/env'
+
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
 const levelOrder: Record<LogLevel, number> = { debug: 10, info: 20, warn: 30, error: 40 }
-const currentLevel: LogLevel = (process.env.LOG_LEVEL as LogLevel) || (process.env.NODE_ENV === 'production' ? 'info' : 'debug')
+const currentLevel: LogLevel = (process.env.LOG_LEVEL as LogLevel) || (env.NODE_ENV === 'production' ? 'info' : 'debug')
 
 function shouldLog(level: LogLevel): boolean {
   return levelOrder[level] >= levelOrder[currentLevel]

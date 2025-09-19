@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { error, success } from '@/lib/http'
 import { adminUpdateSchema } from '@/schemas/admin'
 import { ObjectId } from 'mongodb'
@@ -21,7 +24,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (!parsed.success) return error('Invalid payload', 400, { details: parsed.error.flatten() })
     const { name, email, status } = parsed.data
 
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
 
     const exists = await db.collection('admins').findOne({ email, _id: { $ne: new ObjectId(id) } })

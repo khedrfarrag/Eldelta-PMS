@@ -3,6 +3,7 @@ import getMongoClient from '@/lib/mongodb'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 export const revalidate = 0
+import { env } from '@/config/env'
 import { verifyAdmin } from '@/lib/auth'
 import { ObjectId } from 'mongodb'
 import { 
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
     const providedServiceType = raw?.serviceType as string | undefined
     
     const client = await getMongoClient()
-    const db = client.db(process.env.MONGODB_DB)
+    const db = client.db(env.MONGODB_DB)
     
     // Validate serviceId format first
     if (!/^[0-9a-fA-F]{24}$/.test(baseParsed.data.serviceId)) {
@@ -181,7 +182,7 @@ export async function GET(request: NextRequest) {
     }
     
     const client = await getMongoClient()
-    const db = client.db(process.env.MONGODB_DB)
+    const db = client.db(env.MONGODB_DB)
     
     // Get query parameters
     const { searchParams } = new URL(request.url)
