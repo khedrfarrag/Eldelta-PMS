@@ -1,10 +1,11 @@
 import { MongoClient } from 'mongodb'
+import { env } from '@/config/env'
 
 let client: MongoClient | undefined
 let clientPromise: Promise<MongoClient> | undefined
 
 async function getMongoClient(): Promise<MongoClient> {
-  const uri = process.env.MONGODB_URI
+  const uri = env.MONGODB_URI
   if (!uri) {
     throw new Error('Please add your Mongo URI to .env.local or environment variables')
   }

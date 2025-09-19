@@ -3,13 +3,14 @@ import getMongoClient from '@/lib/mongodb'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 export const revalidate = 0
+import { env } from '@/config/env'
 // Translation at read-time is removed. Services store {ar,en} and we select by lang.
 
 // GET - Get all services (public) with language support
 export async function GET(request: NextRequest) {
   try {
     const client = await getMongoClient()
-    const db = client.db(process.env.MONGODB_DB)
+    const db = client.db(env.MONGODB_DB)
     
     // Get query parameters
     const { searchParams } = new URL(request.url)

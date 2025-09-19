@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { NextRequest } from 'next/server'
+import { env } from '@/config/env'
 
 // Password hashing
 export async function hashPassword(password: string): Promise<string> {
@@ -14,22 +15,22 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 
 // JWT token generation and verification
 export function generateToken(payload: any): string {
-  if (!process.env.JWT_SECRET) {
+  if (!env.JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined')
   }
   
-  return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+  return jwt.sign(payload, env.JWT_SECRET, {
+    expiresIn: env.JWT_EXPIRES_IN || '7d'
   } as jwt.SignOptions)
 }
 
 export function verifyToken(token: string): any {
-  if (!process.env.JWT_SECRET) {
+  if (!env.JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined')
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    const decoded = jwt.verify(token, env.JWT_SECRET)
     return decoded
   } catch (error) {
     return null
@@ -57,10 +58,10 @@ export function extractTokenFromRequest(request: NextRequest): string | null {
 async function verifyUserInDatabase(email: string, collections: string[]): Promise<{ isValid: boolean; user?: any }> {
   try {
     const { MongoClient } = await import('mongodb')
-    const client = new MongoClient(process.env.MONGODB_URI!)
+    const client = new MongoClient(env.MONGODB_URI!)
     await client.connect()
     
-    const db = client.db(process.env.MONGODB_DB)
+    const db = client.db(env.MONGODB_DB)
     
     for (const collectionName of collections) {
       let user

@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { verifyAdmin, verifySuperAdmin } from '@/lib/auth'
 import { ObjectId } from 'mongodb'
+import { env } from '@/config/env'
 // Removed runtime translation. Optionally keep create-on-write later.
 
 // GET - Get all services (admin only)
@@ -17,8 +21,8 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const client = await clientPromise
-    const db = client.db(process.env.MONGODB_DB)
+    const client = await getMongoClient()
+    const db = client.db(env.MONGODB_DB)
 
     // Get query parameters
     const url = new URL(request.url)
@@ -112,8 +116,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const client = await clientPromise
-    const db = client.db(process.env.MONGODB_DB)
+    const client = await getMongoClient()
+    const db = client.db(env.MONGODB_DB)
 
     const body = await request.json()
     const { name, description, features, status, order } = body

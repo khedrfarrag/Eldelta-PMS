@@ -3,6 +3,7 @@ import getMongoClient from '@/lib/mongodb'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 export const revalidate = 0
+import { env } from '@/config/env'
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
     }
     
     const client = await getMongoClient()
-    const db = client.db(process.env.MONGODB_DB)
+    const db = client.db(env.MONGODB_DB)
     
     // Create contact message
     const contactMessage = {

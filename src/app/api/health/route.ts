@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 export const revalidate = 0
 import { testEmailConnection } from '@/lib/email'
+import { env } from '@/config/env'
 
 export async function GET(request: NextRequest) {
   const startTime = Date.now()
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest) {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    environment: process.env.NODE_ENV,
+    environment: env.NODE_ENV,
     version: process.env.npm_package_version || '1.0.0',
     services: {} as Record<string, any>,
     performance: {} as Record<string, any>,

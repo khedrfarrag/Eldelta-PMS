@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { error, success } from '@/lib/http'
 import { ObjectId } from 'mongodb'
 import { verifySuperAdmin } from '@/lib/auth'
@@ -15,7 +18,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const { id } = await params
     if (!ObjectId.isValid(id)) return error('Invalid id', 400)
 
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
 
     const res = await db.collection('admins').deleteOne({ _id: new ObjectId(id) })

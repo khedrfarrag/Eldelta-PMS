@@ -6,6 +6,7 @@ export const revalidate = 0
 import { hashPassword } from '@/lib/auth'
 import { generateNumericOtp, hashOtp } from '@/lib/otp'
 import { sendOtpEmail } from '@/lib/email'
+import { env } from '@/config/env'
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
     
     const client = await getMongoClient()
-    const db = client.db(process.env.MONGODB_DB)
+    const db = client.db(env.MONGODB_DB)
     
     // Check if email already exists in admins or super_admin collections
     const existingAdmin = await db.collection('admins').findOne({ email })
@@ -108,8 +109,8 @@ export async function POST(request: NextRequest) {
           _id: result.insertedId
         },
         message: 'تم التسجيل بنجاح! تم إنشاء رمز التحقق.',
-        otp: process.env.NODE_ENV === 'development' ? otp : undefined,
-        note: process.env.NODE_ENV === 'development' 
+        otp: env.NODE_ENV === 'development' ? otp : undefined,
+        note: env.NODE_ENV === 'development' 
           ? 'خدمة البريد غير مفعلة، رمز التحقق: ' + otp 
           : 'يرجى التواصل مع الدعم للحصول على رمز التحقق'
       }, { status: 201 })
