@@ -222,8 +222,8 @@ export default function LogisticsForm() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-200 dark:bg-gray-900">
+        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
           <div className="text-green-600 text-6xl mb-4">✓</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'تم إرسال طلبك بنجاح!' : 'Request submitted successfully!'}
@@ -761,9 +761,9 @@ export default function LogisticsForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-200 dark:bg-gray-900 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'طلب خدمة الشحن واللوجستيات' : 'Logistics & Shipping Service Request'}
