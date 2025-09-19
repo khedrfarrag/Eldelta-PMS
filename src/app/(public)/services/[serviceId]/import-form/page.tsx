@@ -258,7 +258,7 @@ export default function ImportForm() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+          <p className="mt-4 text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'جاري تحميل النموذج...' : 'Loading form...'}
           </p>
         </div>
@@ -271,10 +271,10 @@ export default function ImportForm() {
       <div className="min-h-screen flex items-center justify-center bg-gray-200 dark:bg-gray-900">
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
           <div className="text-green-600 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4" dir={isRTL ? "rtl" : "ltr"}>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'تم إرسال طلبك بنجاح!' : 'Request submitted successfully!'}
           </h2>
-          <p className="text-gray-600 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+          <p className="text-gray-800 dark:text-gray-200 mb-6" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'سيتم التواصل معك قريباً لتأكيد التفاصيل' : 'We will contact you soon to confirm the details'}
           </p>
           <button
@@ -293,13 +293,13 @@ export default function ImportForm() {
       case 1:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'البيانات الأساسية' : 'Basic Information'}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الاسم الكامل *' : 'Full Name *'}
                 </label>
                 <input
@@ -321,7 +321,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'اسم الشركة / النشاط التجاري *' : 'Company / Business Name *'}
                 </label>
                 <input
@@ -343,7 +343,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'رقم الهاتف (واتساب) *' : 'Phone Number (WhatsApp) *'}
                 </label>
                 <input
@@ -368,7 +368,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'البريد الإلكتروني *' : 'Email Address *'}
                 </label>
                 <input
@@ -398,7 +398,7 @@ export default function ImportForm() {
       case 2:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'بيانات المنتج' : 'Product Information'}
             </h2>
             
@@ -508,7 +508,7 @@ export default function ImportForm() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الكمية التقديرية المطلوبة *' : 'Estimated quantity required *'}
                 </label>
                 <input
@@ -534,7 +534,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'عدد مرات الاستيراد المتوقعة *' : 'Expected import frequency *'}
                 </label>
                 <select
@@ -570,7 +570,7 @@ export default function ImportForm() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'من أي دولة ترغب في الاستيراد؟ *' : 'From which country do you want to import? *'}
                 </label>
                 <input
@@ -593,7 +593,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'إلى أي ميناء أو بلد تريد وصول الشحنة؟ *' : 'To which port or country do you want the shipment to arrive? *'}
                 </label>
                 <input
@@ -616,7 +616,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'القيمة التقديرية للشحنة (بالدولار أو العملة المحلية) *' : 'Estimated value of shipment (in USD or local currency) *'}
                 </label>
                 <input
@@ -642,7 +642,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'طريقة الشحن المفضلة *' : 'Preferred shipping method *'}
                 </label>
                 <select
@@ -668,7 +668,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'طريقة التسليم المفضلة *' : 'Preferred delivery method *'}
                 </label>
                 <select
@@ -694,7 +694,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل لديك موعد محدد للشحن أو خطة زمنية؟' : 'Do you have a specific shipping date or timeline?'}
                 </label>
                 <input
@@ -705,7 +705,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'تاريخ الوصول المطلوب' : 'Desired arrival date'}
                 </label>
                 <input
@@ -842,10 +842,10 @@ export default function ImportForm() {
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'طلب خدمة الاستيراد' : 'Import Service Request'}
             </h1>
-            <p className="text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+            <p className="text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'املأ النموذج أدناه وسنقوم بالتواصل معك قريباً' : 'Fill out the form below and we will contact you soon'}
             </p>
           </div>
@@ -853,10 +853,10 @@ export default function ImportForm() {
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+              <span className="text-sm font-medium text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? `الخطوة ${step} من 5` : `Step ${step} of 5`}
               </span>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-800 dark:text-gray-200">
                 {Math.round((step / 5) * 100)}%
               </span>
             </div>

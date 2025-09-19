@@ -195,7 +195,7 @@ export default function SuppliersForm() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+          <p className="mt-4 text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'جاري تحميل النموذج...' : 'Loading form...'}
           </p>
         </div>
@@ -208,10 +208,10 @@ export default function SuppliersForm() {
       <div className="min-h-screen flex items-center justify-center bg-gray-200 dark:bg-gray-900">
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
           <div className="text-green-600 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4" dir={isRTL ? "rtl" : "ltr"}>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'تم إرسال طلبك بنجاح!' : 'Request submitted successfully!'}
           </h2>
-          <p className="text-gray-600 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+          <p className="text-gray-800 dark:text-gray-200 mb-6" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'سيتم التواصل معك قريباً لتأكيد التفاصيل' : 'We will contact you soon to confirm the details'}
           </p>
           <button
@@ -236,7 +236,7 @@ export default function SuppliersForm() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الاسم الكامل *' : 'Full Name *'}
                 </label>
                 <input
@@ -258,7 +258,7 @@ export default function SuppliersForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'اسم الشركة / النشاط التجاري *' : 'Company / Business Name *'}
                 </label>
                 <input
@@ -280,7 +280,7 @@ export default function SuppliersForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'رقم الهاتف *' : 'Phone Number *'}
                 </label>
                 <input
@@ -305,7 +305,7 @@ export default function SuppliersForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'البريد الإلكتروني *' : 'Email Address *'}
                 </label>
                 <input
@@ -437,7 +437,7 @@ export default function SuppliersForm() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الكمية أو حجم الطلب المتوقع *' : 'Expected quantity or order size *'}
                 </label>
                 <input
@@ -460,7 +460,7 @@ export default function SuppliersForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'البلد المفضل للتوريد أو التصدير *' : 'Preferred country for supply or export *'}
                 </label>
                 <input
@@ -506,7 +506,7 @@ export default function SuppliersForm() {
               
               {watch('hasExistingPartners') && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                  <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                     {isRTL ? 'اذكر التفاصيل' : 'Please provide details'}
                   </label>
                   <textarea
@@ -659,10 +659,10 @@ export default function SuppliersForm() {
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'طلب خدمة توفير الموردين/المستوردين' : 'Suppliers/Importers Service Request'}
             </h1>
-            <p className="text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+            <p className="text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'املأ النموذج أدناه وسنقوم بالتواصل معك قريباً' : 'Fill out the form below and we will contact you soon'}
             </p>
           </div>
