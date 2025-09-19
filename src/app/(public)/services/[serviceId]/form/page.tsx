@@ -315,18 +315,18 @@ export default function ServiceFormWizard() {
   }
 
   return (
-    <section className="w-full pt-24 pb-16 px-4 md:px-8 lg:px-12 transition-colors duration-300">
+    <section className="w-full pt-24 pb-16 px-4 md:px-8 lg:px-12 transition-colors duration-300 bg-gray-200 dark:bg-gray-900 min-h-screen">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-6 text-center">
-          <h1 className="text-2xl md:text-3xl font-bold" dir={isRTL ? "rtl" : "ltr"}>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? "بدء طلب الخدمة" : "Start Service Request"}
           </h1>
-          <div className="mt-2 text-sm text-gray-600 dark:text-gray-400" dir={isRTL ? "rtl" : "ltr"}>
+          <div className="mt-2 text-sm text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? "اتّبع الخطوات التالية لتقديم معلومات طلبك" : "Follow the steps to provide your request details"}
           </div>
           <div className="mt-3 flex items-center justify-center gap-2" dir={isRTL ? 'rtl' : 'ltr'}>
-            <span className="text-sm text-gray-700">{loadingService ? (isRTL ? 'جارٍ تحميل الخدمة...' : 'Loading service...') : (service?.name || '')}</span>
+            <span className="text-sm text-gray-800 dark:text-gray-200">{loadingService ? (isRTL ? 'جارٍ تحميل الخدمة...' : 'Loading service...') : (service?.name || '')}</span>
             {service && (
               <span className={`px-2 py-0.5 rounded-full text-xs ${serviceType === 'import' ? 'bg-blue-50 text-blue-700' : serviceType === 'export' ? 'bg-emerald-50 text-emerald-700' : serviceType === 'logistics' ? 'bg-purple-50 text-purple-700' : 'bg-gray-50 text-gray-700'}`}>
                 {serviceType === 'import' ? (isRTL ? 'استيراد' : 'Import') : serviceType === 'export' ? (isRTL ? 'تصدير' : 'Export') : serviceType === 'logistics' ? (isRTL ? 'لوجستيات' : 'Logistics') : (isRTL ? 'أخرى' : 'Other')}
@@ -343,7 +343,7 @@ export default function ServiceFormWizard() {
               style={{ width: `${(step / 7) * 100}%` }}
             />
           </div>
-          <div className="mt-2 text-xs text-gray-600 dark:text-gray-400" dir={isRTL ? "rtl" : "ltr"}>
+          <div className="mt-2 text-xs text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? `الخطوة ${step} من 7` : `Step ${step} of 7`}
           </div>
         </div>
@@ -411,7 +411,7 @@ export default function ServiceFormWizard() {
             <div className="space-y-4" dir={isRTL ? "rtl" : "ltr"}>
               <h2 className="text-lg font-bold">{isRTL ? "التفضيلات اللوجستية" : "Logistics preferences"}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <select {...register("preferredShippingMethod")} className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800">
+                <select {...register("preferredShippingMethod")} className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-transparent dark:bg-gray-800">
                   <option value="">{isRTL ? "طريقة الشحن (اختياري)" : "Shipping method (optional)"}</option>
                   <option value="sea">{isRTL ? "بحري" : "Sea"}</option>
                   <option value="air">{isRTL ? "جوي" : "Air"}</option>
@@ -444,12 +444,12 @@ export default function ServiceFormWizard() {
             <div className="space-y-4" dir={isRTL ? "rtl" : "ltr"}>
               <h2 className="text-lg font-bold">{isRTL ? "خيارات إضافية" : "Additional options"}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <select {...register("insuranceNeeded")} className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800">
+                <select {...register("insuranceNeeded")} className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-transparent dark:bg-gray-800">
                   <option value="">{isRTL ? "التأمين (اختياري)" : "Insurance (optional)"}</option>
                   <option value="yes">{isRTL ? "نعم" : "Yes"}</option>
                   <option value="no">{isRTL ? "لا" : "No"}</option>
                 </select>
-                <select {...register("heardAboutUs")} className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800">
+                <select {...register("heardAboutUs")} className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-transparent dark:bg-gray-800">
                   <option value="">{isRTL ? "كيف سمعت عنا؟ (اختياري)" : "How did you hear about us? (optional)"}</option>
                   <option value="search">{isRTL ? "محرك بحث" : "Search engine"}</option>
                   <option value="ads">{isRTL ? "إعلانات" : "Ads"}</option>

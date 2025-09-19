@@ -213,7 +213,7 @@ export default function ExportForm() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+          <p className="mt-4 text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'جاري تحميل النموذج...' : 'Loading form...'}
           </p>
         </div>
@@ -223,13 +223,13 @@ export default function ExportForm() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-200 dark:bg-gray-900">
+        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
           <div className="text-green-600 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4" dir={isRTL ? "rtl" : "ltr"}>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'تم إرسال طلبك بنجاح!' : 'Request submitted successfully!'}
           </h2>
-          <p className="text-gray-600 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+          <p className="text-gray-800 dark:text-gray-200 mb-6" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'سيتم التواصل معك قريباً لتأكيد التفاصيل' : 'We will contact you soon to confirm the details'}
           </p>
           <button
@@ -254,7 +254,7 @@ export default function ExportForm() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الاسم الكامل *' : 'Full Name *'}
                 </label>
                 <input
@@ -276,7 +276,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'اسم الشركة / النشاط التجاري *' : 'Company / Business Name *'}
                 </label>
                 <input
@@ -298,7 +298,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'رقم الهاتف (واتساب) *' : 'Phone Number (WhatsApp) *'}
                 </label>
                 <input
@@ -323,7 +323,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'البريد الإلكتروني *' : 'Email Address *'}
                 </label>
                 <input
@@ -405,7 +405,7 @@ export default function ExportForm() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الكمية المتاحة للتصدير *' : 'Available quantity for export *'}
                 </label>
                 <input
@@ -431,7 +431,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'القدرة الإنتاجية الشهرية أو السنوية *' : 'Monthly or annual production capacity *'}
                 </label>
                 <input
@@ -465,7 +465,7 @@ export default function ExportForm() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'بلد التصدير *' : 'Export country *'}
                 </label>
                 <input
@@ -488,7 +488,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الدولة المستهدف التصدير إليها *' : 'Target country for export *'}
                 </label>
                 <input
@@ -511,7 +511,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'المدينة/الميناء المستهدف *' : 'Target city/port *'}
                 </label>
                 <input
@@ -534,7 +534,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'ميناء الشحن في بلدك *' : 'Shipping port in your country *'}
                 </label>
                 <input
@@ -557,7 +557,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'طريقة الشحن المفضلة *' : 'Preferred shipping method *'}
                 </label>
                 <select
@@ -582,7 +582,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'طريقة التسليم المفضلة *' : 'Preferred delivery method *'}
                 </label>
                 <select
@@ -607,7 +607,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'القيمة التقديرية للشحنة *' : 'Estimated shipment value *'}
                 </label>
                 <input
@@ -633,7 +633,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل لديك خطة زمنية محددة للشحن؟' : 'Do you have a specific shipping timeline?'}
                 </label>
                 <input
@@ -667,7 +667,7 @@ export default function ExportForm() {
               
               {watch('qualityCertificates') && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                  <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
                     {isRTL ? 'اذكر التفاصيل' : 'Please provide details'}
                   </label>
                   <textarea
@@ -754,14 +754,14 @@ export default function ExportForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-200 dark:bg-gray-900 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'طلب خدمة التصدير' : 'Export Service Request'}
             </h1>
-            <p className="text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+            <p className="text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'املأ النموذج أدناه وسنقوم بالتواصل معك قريباً' : 'Fill out the form below and we will contact you soon'}
             </p>
           </div>
