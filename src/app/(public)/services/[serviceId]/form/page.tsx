@@ -315,7 +315,7 @@ export default function ServiceFormWizard() {
   }
 
   return (
-    <section className="w-full pt-24 pb-16 px-4 md:px-8 lg:px-12 transition-colors duration-300 bg-gray-200 dark:bg-gray-900 min-h-screen">
+    <section className="w-full pt-24 pb-16 px-4 md:px-8 lg:px-12 transition-colors duration-300 min-h-screen">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-6 text-center">
@@ -337,9 +337,9 @@ export default function ServiceFormWizard() {
 
         {/* Progress */}
         <div className="mb-8">
-          <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="w-full h-2 rounded-full overflow-hidden">
             <div
-              className="h-full bg-teal-600 dark:bg-teal-500 transition-all"
+              className="h-full bg-teal-600  transition-all"
               style={{ width: `${(step / 7) * 100}%` }}
             />
           </div>
