@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { error, success } from '@/lib/http'
 import { verifyAdmin } from '@/lib/auth'
 
@@ -11,7 +14,7 @@ export async function GET(request: NextRequest) {
       return error('Unauthorized', 401)
     }
 
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
 
     const collection = authResult.user.role === 'super_admin' ? 'super_admin' : 'admins'
@@ -48,7 +51,7 @@ export async function PUT(request: NextRequest) {
       return error('Invalid email format', 400)
     }
 
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
 
     const collection = authResult.user.role === 'super_admin' ? 'super_admin' : 'admins'

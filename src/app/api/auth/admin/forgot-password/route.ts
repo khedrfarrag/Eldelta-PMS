@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { error, success } from '@/lib/http'
 import { forgotPasswordSchema } from '@/schemas/password'
 import { generateResetToken } from '@/lib/reset-token'
@@ -12,7 +15,7 @@ export async function POST(request: NextRequest) {
     if (!parsed.success) return error('Invalid payload', 400, { details: parsed.error.flatten() })
     const { email } = parsed.data
 
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
 
     // Check existence in either collection

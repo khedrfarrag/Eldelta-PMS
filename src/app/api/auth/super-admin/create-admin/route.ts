@@ -1,8 +1,12 @@
 import { NextRequest } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { error, success } from '@/lib/http'
 import { adminCreateSchema } from '@/schemas/admin'
 import { hashPassword, verifySuperAdmin } from '@/lib/auth'
+import { env } from '@/config/env'
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,8 +21,8 @@ export async function POST(request: NextRequest) {
     if (!parsed.success) return error('Invalid payload', 400, { details: parsed.error.flatten() })
     const { name, email, password, status } = parsed.data
 
-    const client = await clientPromise
-    const db = client.db(process.env.MONGODB_DB)
+    const client = await getMongoClient()
+    const db = client.db(env.MONGODB_DB)
 
     const exists = await db.collection('admins').findOne({ email })
     const existsSuper = await db.collection('super_admin').findOne({ email })

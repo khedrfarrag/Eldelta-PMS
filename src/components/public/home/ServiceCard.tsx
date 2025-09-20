@@ -46,7 +46,7 @@ export default function ServiceCard({ service }: ServiceCardProps) {
     }
     
     const serviceId = (service as any)._id || (service as any).id;
-    if (name.includes("استيراد") || name.includes("import")) {
+    if (name.includes("استيراد") ||(name.includes("أستيراد")||(name.includes("الاستيراد") || name.includes("import")))) {
       return `/services/${serviceId}/import-form`;
     } else if (name.includes("تصدير") || name.includes("export")) {
       return `/services/${serviceId}/export-form`;

@@ -67,7 +67,7 @@ export const logisticsRequestSchema = baseRequestSchema.extend({
   fromCity: z.string().optional(),
   toCity: z.string().optional(),
   shipmentType: z.enum(['full_container', 'partial_container', 'air', 'land', 'express']).optional(),
-  cargoNature: z.enum(PRODUCT_CATEGORY_VALUES as unknown as [string, ...string[]]).optional(),
+  productType: z.enum(PRODUCT_CATEGORY_VALUES as unknown as [string, ...string[]]).optional(),
   weight: z.union([z.string(), z.number()]).optional(),
   volume: z.union([z.string(), z.number()]).optional(),
   packagesCount: z.union([z.string(), z.number()]).optional(),
@@ -75,6 +75,7 @@ export const logisticsRequestSchema = baseRequestSchema.extend({
   doorToDoor: z.boolean().optional(),
   tracking: z.boolean().optional(),
   customsAgent: z.boolean().optional(),
+  shippingUrgency: z.enum(['urgent', 'normal']).optional(),
 })
 
 // Suppliers/Importers sourcing service schema

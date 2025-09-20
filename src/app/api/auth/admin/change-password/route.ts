@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { error, success } from '@/lib/http'
 import { changePasswordSchema } from '@/schemas/password'
 import { verifyPassword, hashPassword } from '@/lib/auth'
@@ -15,7 +18,7 @@ export async function PUT(request: NextRequest) {
     if (!email) return error('Unauthorized', 401)
     if (role !== 'admin' && role !== 'super_admin') return error('Forbidden', 403)
 
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
 
     const collection = role === 'super_admin' ? 'super_admin' : 'admins'

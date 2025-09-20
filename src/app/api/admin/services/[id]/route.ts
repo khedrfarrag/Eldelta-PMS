@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { verifyAdmin, verifySuperAdmin } from '@/lib/auth'
 import { ObjectId } from 'mongodb'
+import { env } from '@/config/env'
 // Removed translate-on-update. We accept multilingual objects directly.
 
 // GET - Get single service by ID (admin only)
@@ -27,8 +31,8 @@ export async function GET(
       )
     }
 
-    const client = await clientPromise
-    const db = client.db(process.env.MONGODB_DB)
+    const client = await getMongoClient()
+    const db = client.db(env.MONGODB_DB)
 
     const service = await db.collection('services').findOne({ 
       _id: new ObjectId(id) 
@@ -109,8 +113,8 @@ export async function PUT(
       )
     }
 
-    const client = await clientPromise
-    const db = client.db(process.env.MONGODB_DB)
+    const client = await getMongoClient()
+    const db = client.db(env.MONGODB_DB)
 
     // Check if service exists
     const existingService = await db.collection('services').findOne({ 
@@ -200,8 +204,8 @@ export async function DELETE(
       )
     }
 
-    const client = await clientPromise
-    const db = client.db(process.env.MONGODB_DB)
+    const client = await getMongoClient()
+    const db = client.db(env.MONGODB_DB)
 
     // Check if service exists
     const existingService = await db.collection('services').findOne({ 

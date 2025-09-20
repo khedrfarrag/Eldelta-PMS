@@ -111,7 +111,7 @@ export default function AboutUs() {
               </p>
               <div className="max-w-[160px] inline-flex ">
                 <Link
-                  href={isRTL ? "/contact-us" : "/contact-us"}
+                  href={isRTL ? "/ar/blog" : "/en/blog"}
                   className="px-3 py-2 md:px-6 md:py-3 rounded-full md:rounded-4xl font-medium transition-colors flex items-center space-x-1 md:space-x-2 hover:opacity-80 cursor-pointer bg-[var(--color-secondary)]"
                 >
                   <span className="text-white text-xs md:text-sm   ">

@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { error, success } from '@/lib/http'
 import { resetPasswordSchema } from '@/schemas/password'
 import { hashResetToken } from '@/lib/reset-token'
@@ -14,7 +17,7 @@ export async function POST(request: NextRequest) {
     const { token, newPassword } = parsed.data
     const tokenHash = hashResetToken(token)
 
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
 
     const rec = await db.collection('password_resets').findOne({ tokenHash })

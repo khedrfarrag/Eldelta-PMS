@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { testEmailConnection } from '@/lib/email'
+import { env } from '@/config/env'
 
 export async function GET(request: NextRequest) {
   const startTime = Date.now()
@@ -8,7 +12,7 @@ export async function GET(request: NextRequest) {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    environment: process.env.NODE_ENV,
+    environment: env.NODE_ENV,
     version: process.env.npm_package_version || '1.0.0',
     services: {} as Record<string, any>,
     performance: {} as Record<string, any>,
@@ -19,7 +23,7 @@ export async function GET(request: NextRequest) {
     // Database health check
     const dbStartTime = Date.now()
     try {
-      const client = await clientPromise
+    const client = await getMongoClient()
       await client.db().admin().ping()
       const dbEndTime = Date.now()
       
@@ -99,7 +103,7 @@ export async function POST(request: NextRequest) {
     
     switch (service) {
       case 'database':
-        const client = await clientPromise
+        const client = await getMongoClient()
         const dbStats = await client.db().stats()
         return NextResponse.json({
           status: 'healthy',
