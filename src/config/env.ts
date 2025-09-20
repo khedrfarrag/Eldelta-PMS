@@ -1,5 +1,15 @@
 import { z } from 'zod'
 
+// Load environment variables from .env.local (only in development)
+if (typeof window === 'undefined' && process.env.NODE_ENV === 'development') {
+  const path = require('path')
+  const fs = require('fs')
+  const envPath = path.resolve(process.cwd(), '.env.local')
+  if (fs.existsSync(envPath)) {
+    require('dotenv').config({ path: envPath })
+  }
+}
+
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   MONGODB_URI: z.string().min(1, 'MONGODB_URI is required'),
