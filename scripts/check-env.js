@@ -5,21 +5,36 @@
  * يتحقق من صحة إعدادات البيئة قبل النشر
  */
 
+// Load environment variables from .env.local
+const path = require('path');
+const fs = require('fs');
+
+// Check if .env.local exists
+const envPath = path.resolve(process.cwd(), '.env.local');
+if (fs.existsSync(envPath)) {
+  require('dotenv').config({ path: envPath });
+  console.log(`📁 Loaded environment from: ${envPath}`);
+} else {
+  console.log('⚠️  .env.local file not found');
+}
+
 const requiredEnvVars = [
   'MONGODB_URI',
   'MONGODB_DB',
   'JWT_SECRET',
   'JWT_EXPIRES_IN',
   'NEXTAUTH_SECRET',
-  'NEXTAUTH_URL',
-  'EMAIL_HOST',
-  'EMAIL_USER',
-  'EMAIL_PASS'
+  'NEXTAUTH_URL'
 ]
 
 const optionalEnvVars = [
+  'EMAIL_HOST',
   'EMAIL_PORT',
-  'LIBRETRANSLATE_URL'
+  'EMAIL_USER',
+  'EMAIL_PASS',
+  'LIBRETRANSLATE_URL',
+  'NEXT_PUBLIC_APP_URL',
+  'NEXT_PUBLIC_API_URL'
 ]
 
 function checkEnvironment() {
@@ -78,11 +93,12 @@ function checkEnvironment() {
   
   if (hasErrors) {
     console.log('❌ يوجد أخطاء في إعدادات البيئة!')
-    console.log('📖 راجع DEPLOYMENT_GUIDE.md للمساعدة')
+    console.log('📖 راجع ENVIRONMENT_SETUP.md للمساعدة')
+    console.log('🔧 أو استخدم: npm run setup-env')
     process.exit(1)
   } else {
     console.log('✅ جميع الإعدادات صحيحة!')
-    console.log('🚀 جاهز للنشر على Netlify')
+    console.log('🚀 جاهز للتشغيل المحلي أو النشر على Netlify')
   }
 }
 

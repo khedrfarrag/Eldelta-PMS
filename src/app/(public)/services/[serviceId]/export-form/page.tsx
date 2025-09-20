@@ -213,7 +213,7 @@ export default function ExportForm() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
+          <p className="mt-4 " dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'جاري تحميل النموذج...' : 'Loading form...'}
           </p>
         </div>
@@ -223,13 +223,13 @@ export default function ExportForm() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-200 dark:bg-gray-900">
-        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center ">
+        <div className="max-w-md w-full rounded-lg shadow-lg p-8 text-center">
           <div className="text-green-600 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4" dir={isRTL ? "rtl" : "ltr"}>
+          <h2 className="text-2xl font-bold  mb-4" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'تم إرسال طلبك بنجاح!' : 'Request submitted successfully!'}
           </h2>
-          <p className="text-gray-800 dark:text-gray-200 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+          <p className=" mb-6" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'سيتم التواصل معك قريباً لتأكيد التفاصيل' : 'We will contact you soon to confirm the details'}
           </p>
           <button
@@ -248,13 +248,13 @@ export default function ExportForm() {
       case 1:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <h2 className="text-2xl font-bold  mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'البيانات الأساسية' : 'Basic Information'}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الاسم الكامل *' : 'Full Name *'}
                 </label>
                 <input
@@ -263,7 +263,7 @@ export default function ExportForm() {
                     required: isRTL ? 'الاسم الكامل مطلوب' : 'Full name is required',
                     minLength: { value: 2, message: isRTL ? 'الاسم يجب أن يكون حرفين على الأقل' : 'Name must be at least 2 characters' }
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.customerName ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -276,7 +276,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'اسم الشركة / النشاط التجاري *' : 'Company / Business Name *'}
                 </label>
                 <input
@@ -285,7 +285,7 @@ export default function ExportForm() {
                     required: isRTL ? 'اسم الشركة مطلوب' : 'Company name is required',
                     minLength: { value: 2, message: isRTL ? 'اسم الشركة يجب أن يكون حرفين على الأقل' : 'Company name must be at least 2 characters' }
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.companyName ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -298,7 +298,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'رقم الهاتف (واتساب) *' : 'Phone Number (WhatsApp) *'}
                 </label>
                 <input
@@ -310,7 +310,7 @@ export default function ExportForm() {
                       message: isRTL ? 'رقم الهاتف غير صحيح' : 'Invalid phone number'
                     }
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.phone ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -323,7 +323,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'البريد الإلكتروني *' : 'Email Address *'}
                 </label>
                 <input
@@ -335,7 +335,7 @@ export default function ExportForm() {
                       message: isRTL ? 'البريد الإلكتروني غير صحيح' : 'Invalid email address'
                     }
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -353,24 +353,24 @@ export default function ExportForm() {
       case 2:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+              <h2 className="text-2xl font-bold  mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'بيانات المنتج' : 'Product Information'}
             </h2>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'نوع المنتج الذي ترغب في تصديره *' : 'Type of product you want to export *'}
               </label>
               <select
                 {...register('productType', { required: isRTL ? 'نوع المنتج مطلوب' : 'Product type is required' })}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                   errors.productType ? 'border-red-500' : 'border-gray-300'
                 }`}
                 dir={isRTL ? "rtl" : "ltr"}
               >
-                <option value="">{isRTL ? 'اختر نوع المنتج' : 'Select product type'}</option>
+                <option value="" className="text-gray-900">{isRTL ? 'اختر نوع المنتج' : 'Select product type'}</option>
                 {PRODUCT_CATEGORIES.map(cat => (
-                  <option key={cat.value} value={cat.value}>{isRTL ? cat.labelAr : cat.labelEn}</option>
+                  <option key={cat.value} value={cat.value} className="text-gray-900">{isRTL ? cat.labelAr : cat.labelEn}</option>
                 ))}
               </select>
               {errors.productType && (
@@ -381,7 +381,7 @@ export default function ExportForm() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'تفاصيل المنتج (الخامة – التغليف – الشهادات المتوفرة مثل ISO/CE/FDA) *' : 'Product details (materials – packaging – available certificates like ISO/CE/FDA) *'}
               </label>
               <textarea
@@ -391,7 +391,7 @@ export default function ExportForm() {
                 })}
                 rows={4}
                 placeholder={isRTL ? 'اذكر تفاصيل المنتج والمواد الخام المستخدمة وشهادات الجودة المتوفرة...' : 'Describe product details, materials used, and available quality certificates...'}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                   errors.productDetails ? 'border-red-500' : 'border-gray-300'
                 }`}
                 dir={isRTL ? "rtl" : "ltr"}
@@ -405,7 +405,7 @@ export default function ExportForm() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الكمية المتاحة للتصدير *' : 'Available quantity for export *'}
                 </label>
                 <input
@@ -418,7 +418,7 @@ export default function ExportForm() {
                     }
                   })}
                   placeholder={isRTL ? 'مثال: 5000 كيلو شهرياً' : 'Example: 5000 kg monthly'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.availableQuantity ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -431,7 +431,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'القدرة الإنتاجية الشهرية أو السنوية *' : 'Monthly or annual production capacity *'}
                 </label>
                 <input
@@ -441,7 +441,7 @@ export default function ExportForm() {
                     minLength: { value: 2, message: isRTL ? 'القدرة الإنتاجية يجب أن تكون حرفين على الأقل' : 'Production capacity must be at least 2 characters' }
                   })}
                   placeholder={isRTL ? 'مثال: 10000 وحدة شهرياً' : 'Example: 10000 units monthly'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.productionCapacity ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -459,23 +459,23 @@ export default function ExportForm() {
       case 3:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <h2 className="text-2xl font-bold  mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'بيانات التصدير' : 'Export Information'}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'بلد التصدير *' : 'Export country *'}
                 </label>
-                <input
+                <input  
                   type="text"
                   {...register('exportCountry', { 
                     required: isRTL ? 'بلد التصدير مطلوب' : 'Export country is required',
                     minLength: { value: 2, message: isRTL ? 'اسم الدولة يجب أن يكون حرفين على الأقل' : 'Country name must be at least 2 characters' }
                   })}
                   placeholder={isRTL ? 'مثال: السعودية، الإمارات...' : 'Example: Saudi Arabia, UAE...'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.exportCountry ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -488,7 +488,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الدولة المستهدف التصدير إليها *' : 'Target country for export *'}
                 </label>
                 <input
@@ -498,7 +498,7 @@ export default function ExportForm() {
                     minLength: { value: 2, message: isRTL ? 'اسم الدولة يجب أن يكون حرفين على الأقل' : 'Country name must be at least 2 characters' }
                   })}
                   placeholder={isRTL ? 'مثال: الإمارات، الكويت، مصر...' : 'Example: UAE, Kuwait, Egypt...'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.destinationCountry ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -511,7 +511,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'المدينة/الميناء المستهدف *' : 'Target city/port *'}
                 </label>
                 <input
@@ -521,7 +521,7 @@ export default function ExportForm() {
                     minLength: { value: 2, message: isRTL ? 'اسم المدينة/الميناء يجب أن يكون حرفين على الأقل' : 'City/port name must be at least 2 characters' }
                   })}
                   placeholder={isRTL ? 'مثال: دبي، الكويت، القاهرة...' : 'Example: Dubai, Kuwait, Cairo...'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.destinationCity ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -534,7 +534,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'ميناء الشحن في بلدك *' : 'Shipping port in your country *'}
                 </label>
                 <input
@@ -544,7 +544,7 @@ export default function ExportForm() {
                     minLength: { value: 2, message: isRTL ? 'اسم الميناء يجب أن يكون حرفين على الأقل' : 'Port name must be at least 2 characters' }
                   })}
                   placeholder={isRTL ? 'مثال: ميناء جدة، ميناء الدمام...' : 'Example: Jeddah Port, Dammam Port...'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.shippingPort ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -557,7 +557,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'طريقة الشحن المفضلة *' : 'Preferred shipping method *'}
                 </label>
                 <select
@@ -569,10 +569,10 @@ export default function ExportForm() {
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
                 >
-                  <option value="">{isRTL ? 'اختر طريقة الشحن' : 'Select shipping method'}</option>
-                  <option value="sea">{isRTL ? 'بحري' : 'Sea'}</option>
-                  <option value="air">{isRTL ? 'جوي' : 'Air'}</option>
-                  <option value="land">{isRTL ? 'بري' : 'Land'}</option>
+                  <option value="" className="text-gray-900">{isRTL ? 'اختر طريقة الشحن' : 'Select shipping method'}</option>
+                  <option value="sea" className="text-gray-900">{isRTL ? 'بحري' : 'Sea'}</option>
+                  <option value="air" className="text-gray-900">{isRTL ? 'جوي' : 'Air'}</option>
+                  <option value="land" className="text-gray-900">{isRTL ? 'بري' : 'Land'}</option>
                 </select>
                 {errors.preferredShippingMethod && (
                   <p className="mt-1 text-sm text-red-600" dir={isRTL ? "rtl" : "ltr"}>
@@ -582,7 +582,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'طريقة التسليم المفضلة *' : 'Preferred delivery method *'}
                 </label>
                 <select
@@ -594,10 +594,10 @@ export default function ExportForm() {
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
                 >
-                  <option value="">{isRTL ? 'اختر طريقة التسليم' : 'Select delivery method'}</option>
-                  <option value="cif">{isRTL ? 'CIF' : 'CIF'}</option>
-                  <option value="fob">{isRTL ? 'FOB' : 'FOB'}</option>
-                  <option value="door-to-door">{isRTL ? 'Door to Door' : 'Door to Door'}</option>
+                  <option value="" className="text-gray-900">{isRTL ? 'اختر طريقة التسليم' : 'Select delivery method'}</option>
+                  <option value="cif" className="text-gray-900">{isRTL ? 'CIF' : 'CIF'}</option>
+                  <option value="fob" className="text-gray-900">{isRTL ? 'FOB' : 'FOB'}</option>
+                  <option value="door-to-door" className="text-gray-900">{isRTL ? 'Door to Door' : 'Door to Door'}</option>
                 </select>
                 {errors.preferredDeliveryMethod && (
                   <p className="mt-1 text-sm text-red-600" dir={isRTL ? "rtl" : "ltr"}>
@@ -607,7 +607,7 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'القيمة التقديرية للشحنة *' : 'Estimated shipment value *'}
                 </label>
                 <input
@@ -620,7 +620,7 @@ export default function ExportForm() {
                     }
                   })}
                   placeholder={isRTL ? 'مثال: 50000' : 'Example: 50000'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                     errors.estimatedValue ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -633,13 +633,13 @@ export default function ExportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل لديك خطة زمنية محددة للشحن؟' : 'Do you have a specific shipping timeline?'}
                 </label>
                 <input
                   type="date"
                   {...register('shippingDate')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -658,23 +658,23 @@ export default function ExportForm() {
                 <input
                   type="checkbox"
                   {...register('qualityCertificates')}
-                  className="mr-2 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                  className="mr-2 h-4 w-4 text-green-600 outline-none focus:ring-green-500 border-gray-300 rounded"
                 />
-                <label className="text-sm font-medium text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="text-sm font-medium " dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل لديك شهادات جودة أو مواصفات خاصة للتصدير؟' : 'Do you have quality certificates or special specifications for export?'}
                 </label>
               </div>
               
               {watch('qualityCertificates') && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                  <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                     {isRTL ? 'اذكر التفاصيل' : 'Please provide details'}
                   </label>
                   <textarea
                     {...register('qualityCertificatesDetails')}
                     rows={3}
                     placeholder={isRTL ? 'اذكر الشهادات المتوفرة مثل ISO, CE, FDA...' : 'Mention available certificates like ISO, CE, FDA...'}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 outline-none focus:ring-green-500 focus:border-transparent"
                     dir={isRTL ? "rtl" : "ltr"}
                   />
                 </div>
@@ -688,7 +688,7 @@ export default function ExportForm() {
                   {...register('packagingServices')}
                   className="mr-2 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                 />
-                <label className="text-sm text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="text-sm " dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل تحتاج خدمات تغليف أو تخزين إضافية؟' : 'Do you need additional packaging or storage services?'}
                 </label>
               </div>
@@ -697,9 +697,9 @@ export default function ExportForm() {
                 <input
                   type="checkbox"
                   {...register('findImporters')}
-                  className="mr-2 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                  className="mr-2 h-4 w-4 text-green-600 outline-none focus:ring-green-500 border-gray-300 rounded"
                 />
-                <label className="text-sm text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="text-sm " dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل تحتاج مساعدتنا في إيجاد مستوردين محتملين؟' : 'Do you need our help finding potential importers?'}
                 </label>
               </div>
@@ -715,7 +715,7 @@ export default function ExportForm() {
             </h2>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'كيف سمعت عن خدماتنا؟' : 'How did you hear about our services?'}
               </label>
               <select
@@ -723,25 +723,25 @@ export default function ExportForm() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 dir={isRTL ? "rtl" : "ltr"}
               >
-                <option value="">{isRTL ? 'اختر...' : 'Select...'}</option>
-                <option value="google">{isRTL ? 'جوجل' : 'Google'}</option>
-                <option value="facebook">{isRTL ? 'فيسبوك' : 'Facebook'}</option>
-                <option value="instagram">{isRTL ? 'انستقرام' : 'Instagram'}</option>
-                <option value="twitter">{isRTL ? 'تويتر' : 'Twitter'}</option>
-                <option value="friend">{isRTL ? 'صديق' : 'Friend'}</option>
-                <option value="other">{isRTL ? 'أخرى' : 'Other'}</option>
+                <option value="" className="text-gray-900">{isRTL ? 'اختر...' : 'Select...'}</option>
+                <option value="google" className="text-gray-900">{isRTL ? 'جوجل' : 'Google'}</option>
+                <option value="facebook" className="text-gray-900">{isRTL ? 'فيسبوك' : 'Facebook'}</option>
+                <option value="instagram" className="text-gray-900">{isRTL ? 'انستقرام' : 'Instagram'}</option>
+                <option value="twitter" className="text-gray-900">{isRTL ? 'تويتر' : 'Twitter'}</option>
+                <option value="friend" className="text-gray-900">{isRTL ? 'صديق' : 'Friend'}</option>
+                <option value="other" className="text-gray-900">{isRTL ? 'أخرى' : 'Other'}</option>
               </select>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'ملاحظات إضافية' : 'Additional notes'}
               </label>
               <textarea
                 {...register('notes')}
                 rows={4}
                 placeholder={isRTL ? 'أي معلومات إضافية تريد مشاركتها معنا...' : 'Any additional information you want to share with us...'}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 outline-none rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 dir={isRTL ? "rtl" : "ltr"}
               />
             </div>
@@ -754,14 +754,14 @@ export default function ExportForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-200 dark:bg-gray-900 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+        <div className=" rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+            <h1 className="text-3xl font-bold  mb-2" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'طلب خدمة التصدير' : 'Export Service Request'}
             </h1>
-            <p className="text-gray-800 dark:text-gray-200" dir={isRTL ? "rtl" : "ltr"}>
+            <p className="" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'املأ النموذج أدناه وسنقوم بالتواصل معك قريباً' : 'Fill out the form below and we will contact you soon'}
             </p>
           </div>
@@ -769,10 +769,10 @@ export default function ExportForm() {
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+              <span className="text-sm font-medium " dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? `الخطوة ${step} من 5` : `Step ${step} of 5`}
               </span>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm ">
                 {Math.round((step / 5) * 100)}%
               </span>
             </div>
@@ -799,7 +799,7 @@ export default function ExportForm() {
                 type="button"
                 onClick={prev}
                 disabled={step === 1}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-6 py-2 border border-gray-300 rounded-lg cursor-pointer outline-none transition-all duration-500 dark:hover:bg-gray-300 dark:hover:text-gray-900  hover:bg-gray-900 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 dir={isRTL ? "rtl" : "ltr"}
               >
                 {isRTL ? 'السابق' : 'Previous'}
@@ -809,7 +809,7 @@ export default function ExportForm() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  className="px-6 py-2 bg-green-600 hover:bg-green-50 hover:text-green-600 text-white rounded-lg cursor-pointer outline-none transition-all duration-500 border border-green-600 transition-colors"
                   dir={isRTL ? "rtl" : "ltr"}
                 >
                   {isRTL ? 'التالي' : 'Next'}
@@ -819,7 +819,7 @@ export default function ExportForm() {
                   type="button"
                   onClick={handleSubmit(onSubmit)}
                   disabled={submitting}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-2 bg-green-600  rounded-lg  bg-green-600 hover:bg-green-50 hover:text-green-600 text-white cursor-pointer outline-none transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   dir={isRTL ? "rtl" : "ltr"}
                 >
                   {submitting ? (isRTL ? 'جاري الإرسال...' : 'Submitting...') : (isRTL ? 'إرسال الطلب' : 'Submit Request')}
