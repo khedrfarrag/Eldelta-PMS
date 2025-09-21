@@ -26,11 +26,11 @@ export default function ContentCard({
   const isRTL = locale === 'ar'
 
   const cardStyles = {
-    info: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
+    info: 'dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
     warning: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800',
     success: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
     tip: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800',
-    default: 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+    default: ' border-gray-200 dark:border-gray-700'
   }
 
   const iconColors = {
@@ -62,7 +62,7 @@ export default function ContentCard({
               {icon}
             </div>
             <h3 className={`
-              text-xl font-bold text-gray-900 dark:text-white
+              text-xl font-bold 
               ${isRTL ? 'text-right' : 'text-left'}
             `}>
               {title}

@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-    unoptimized: process.env.NODE_ENV === 'development',
+    unoptimized: true, // تعطيل تحسين الصور لتجنب المشاكل في الإنتاج
     formats: ['image/webp', 'image/avif'],
   },
   // Enable static exports for better performance

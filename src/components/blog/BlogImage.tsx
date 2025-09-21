@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useState } from 'react'
 
 interface BlogImageProps {
@@ -33,16 +32,16 @@ export default function BlogImage({
     }
   }
 
+  // استخدام img عادي بدلاً من next/image لتجنب مشاكل الإنتاج
   return (
-    <Image 
+    <img 
       src={imageSrc}
       alt={alt}
       width={width}
       height={height}
       className={className}
-      priority={priority}
-      unoptimized={unoptimized}
       onError={handleError}
+      loading={priority ? 'eager' : 'lazy'}
     />
   )
 }

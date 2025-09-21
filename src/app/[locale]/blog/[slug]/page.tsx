@@ -42,6 +42,11 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
         title: fm.seo?.metaTitle || fm.title,
         description: fm.seo?.metaDescription || fm.excerpt,
         alternates: { languages: alternates, canonical: fm.seo?.canonicalUrl || articleUrl },
+        icons: {
+            icon: '/images/Nav/eldita.svg',
+            shortcut: '/images/Nav/eldita.svg',
+            apple: '/images/Nav/eldita.svg',
+        },
         openGraph: {
             title: fm.seo?.metaTitle || fm.title,
             description: fm.seo?.metaDescription || fm.excerpt,
@@ -175,15 +180,11 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
 							<div className="mb-12 -mt-8 relative">
 								<div className="rounded-2xl shadow-2xl overflow-hidden">
 									<BlogImage 
-										src={meta.frontmatter.coverImage.url.startsWith('http') 
-											? meta.frontmatter.coverImage.url 
-											: meta.frontmatter.coverImage.url
-										} 
+										src={meta.frontmatter.coverImage.url} 
 										alt={meta.frontmatter.coverImage.alt || meta.frontmatter.title} 
 										width={meta.frontmatter.coverImage.width || 1200} 
 										height={meta.frontmatter.coverImage.height || 630} 
 										priority
-										unoptimized={process.env.NODE_ENV === 'development'}
 									/>
 								</div>
 							</div>
@@ -245,10 +246,10 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
 						? ["الصين", "الهند", "تركيا", "ألمانيا"]
 						: ["China", "India", "Turkey", "Germany"],
 					achievements: locale === 'ar'
-						? ["500+ مشروع ناجح", "50+ دولة", "1000+ عميل"]
+						? ["500+ صفقة ناجحة", "50+ دولة", "1000+ عميل"]
 						: ["500+ successful projects", "50+ countries", "1000+ clients"],
-					contact: "info@eldelta.com",
-					phone: "+966 50 123 4567"
+					contact: "support@eldelta-group.com",
+					phone: "+966 59 837 7921"
 				}}
 				locale={locale}
 			/>

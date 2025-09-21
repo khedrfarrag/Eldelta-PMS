@@ -1,15 +1,58 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import PostCard from '@/components/blog/PostCard'
 import Sidebar from '@/components/blog/Sidebar'
 import Breadcrumbs from '@/components/blog/Breadcrumbs'
-import AnimatedThemeToggle from '@/components/shared/Navigation/AnimatedThemeToggle'
 import { readAllPostsMeta } from '@/lib/blog/mdx'
 import type { LocaleCode } from '@/lib/blog/types'
 
 type Params = { locale: LocaleCode }
 
 export const revalidate = 3600
+
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+    const { locale } = await params
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eldelta.com'
+    
+    return {
+        title: locale === 'ar' ? 'المدونة - الدلتا للاستيراد والتصدير' : 'Blog - Eldelta Import & Export',
+        description: locale === 'ar' 
+            ? 'مقالات مختارة عن الاستيراد والتصدير والخدمات اللوجستية من فريق الدلتا المتخصص.'
+            : 'Selected articles on import, export, and logistics from the specialized Eldelta team.',
+        icons: {
+            icon: '/images/Nav/eldita.svg',
+            shortcut: '/images/Nav/eldita.svg',
+            apple: '/images/Nav/eldita.svg',
+        },
+        openGraph: {
+            title: locale === 'ar' ? 'المدونة - الدلتا للاستيراد والتصدير' : 'Blog - Eldelta Import & Export',
+            description: locale === 'ar' 
+                ? 'مقالات مختارة عن الاستيراد والتصدير والخدمات اللوجستية من فريق الدلتا المتخصص.'
+                : 'Selected articles on import, export, and logistics from the specialized Eldelta team.',
+            url: `${siteUrl}/${locale}/blog`,
+            siteName: 'Eldelta',
+            images: [
+                {
+                    url: '/images/Nav/eldita.svg',
+                    width: 512,
+                    height: 512,
+                    alt: 'Eldelta Logo',
+                },
+            ],
+            locale: locale,
+            type: 'website',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: locale === 'ar' ? 'المدونة - الدلتا للاستيراد والتصدير' : 'Blog - Eldelta Import & Export',
+            description: locale === 'ar' 
+                ? 'مقالات مختارة عن الاستيراد والتصدير والخدمات اللوجستية من فريق الدلتا المتخصص.'
+                : 'Selected articles on import, export, and logistics from the specialized Eldelta team.',
+            images: ['/images/Nav/eldita.svg'],
+        },
+    }
+}
 
 export default async function BlogIndex({ params }: { params: Promise<Params> }) {
 	const { locale } = await params
