@@ -3,7 +3,7 @@ import Link from 'next/link'
 import PostCard from '@/components/blog/PostCard'
 import Sidebar from '@/components/blog/Sidebar'
 import Breadcrumbs from '@/components/blog/Breadcrumbs'
-
+import AnimatedThemeToggle from '@/components/shared/Navigation/AnimatedThemeToggle'
 import { readAllPostsMeta } from '@/lib/blog/mdx'
 import type { LocaleCode } from '@/lib/blog/types'
 
@@ -17,7 +17,8 @@ export default async function BlogIndex({ params }: { params: Promise<Params> })
 	const posts = readAllPostsMeta(locale)
 
 	return (
-		<div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+		<div className="min-h-screen ">
+
 			{/* Hero Section */}
 			<section className="bg-gradient-to-br from-cyan-950 to-slate-900 text-white py-20">
 				<div className="max-w-7xl mx-auto px-4">
@@ -74,6 +75,7 @@ export default async function BlogIndex({ params }: { params: Promise<Params> })
 															src={posts[0].frontmatter.coverImage.url} 
 															alt={posts[0].frontmatter.coverImage.alt || posts[0].frontmatter.title}
 															className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+															
 														/>
 													)}
 													<div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>

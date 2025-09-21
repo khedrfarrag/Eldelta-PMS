@@ -11,6 +11,25 @@ const nextConfig: NextConfig = {
   },
   // Disable source maps to avoid file permission issues
   productionBrowserSourceMaps: false,
+  // Image optimization settings
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/**',
+      },
+    ],
+    unoptimized: process.env.NODE_ENV === 'development',
+    formats: ['image/webp', 'image/avif'],
+  },
+  // Enable static exports for better performance
+  output: 'standalone',
 };
 
 export default nextConfig;

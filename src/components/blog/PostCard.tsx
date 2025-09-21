@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 export default function PostCard({ locale, post }: { locale: 'en' | 'ar'; post: BlogPostMeta }) {
 	return (
 		<article 
-			className="group rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-2"
+			className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-2"
 		>
 			{/* Default vertical layout */}
 			<div className="block group-hover:hidden transition-opacity duration-200">
@@ -24,18 +24,18 @@ export default function PostCard({ locale, post }: { locale: 'en' | 'ar'; post: 
 					</div>
 				</div>
 				<div className="p-6">
-					<div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-3 animate-fade-in">
+					<div className="flex items-center gap-2 text-xs  mb-3 animate-fade-in">
 						<span>{post.frontmatter.publishedAt}</span>
 						<span>•</span>
 						<span>{post.frontmatter.author?.name}</span>
 					</div>
 					<Link href={`/${locale}/blog/${post.slug}`} className="group/link">
-						<h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 group-hover/link:text-cyan-600 transition-all duration-300 line-clamp-2 group-hover/link:translate-x-1">
+						<h3 className="text-lg font-bold mb-3 group-hover/link:text-cyan-600 transition-all duration-300 line-clamp-2 group-hover/link:translate-x-1">
 							{post.frontmatter.title}
 						</h3>
 					</Link>
 					{post.frontmatter.excerpt && (
-						<p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2 animate-fade-in">
+						<p className=" text-sm mb-4 line-clamp-2 animate-fade-in">
 							{post.frontmatter.excerpt}
 						</p>
 					)}
@@ -44,7 +44,7 @@ export default function PostCard({ locale, post }: { locale: 'en' | 'ar'; post: 
 							{post.frontmatter.tags.slice(0, 3).map((tag, index) => (
 								<span 
 									key={tag} 
-									className="px-2 py-1 bg-cyan-50 dark:bg-cyan-900/20 text-cyan-700 dark:text-cyan-300 rounded-full text-xs transition-all duration-200 hover:scale-110"
+									className="px-2 py-1 bg-cyan-50 dark:bg-cyan-900 text-cyan-900 dark:text-cyan-300 rounded-full text-xs transition-all duration-200 hover:scale-110"
 									style={{ animationDelay: `${0.4 + index * 0.1}s` }}
 								>
 									#{tag}
@@ -98,12 +98,12 @@ export default function PostCard({ locale, post }: { locale: 'en' | 'ar'; post: 
 							<span>{post.frontmatter.author?.name}</span>
 						</div>
 						<Link href={`/${locale}/blog/${post.slug}`} className="group/link">
-							<h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover/link:text-cyan-600 transition-all duration-300 animate-fade-in-up group-hover/link:translate-x-1" style={{ animationDelay: '0.2s' }}>
+							<h3 className="text-xl font-bold  mb-4 group-hover/link:text-cyan-600 transition-all duration-300 animate-fade-in-up group-hover/link:translate-x-1" style={{ animationDelay: '0.2s' }}>
 								{post.frontmatter.title}
 							</h3>
 						</Link>
 						{post.frontmatter.excerpt && (
-							<p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+							<p className="mb-4 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
 								{post.frontmatter.excerpt}
 							</p>
 						)}
@@ -111,7 +111,7 @@ export default function PostCard({ locale, post }: { locale: 'en' | 'ar'; post: 
 							{post.frontmatter.tags?.slice(0, 3).map((tag, index) => (
 								<span 
 									key={tag} 
-									className="px-3 py-1 bg-cyan-50 dark:bg-cyan-900/20 text-cyan-700 dark:text-cyan-300 rounded-full text-sm transition-all duration-200 hover:scale-110"
+									className="px-3 py-1 bg-cyan-50 dark:bg-cyan-900 text-cyan-700 dark:text-cyan-300 rounded-full text-sm transition-all duration-200 hover:scale-110"
 									style={{ animationDelay: `${0.5 + index * 0.1}s` }}
 								>
 									#{tag}
