@@ -66,7 +66,21 @@ export function pairTranslations(): PairedTranslations[] {
 }
 
 export function getPostMeta(locale: LocaleCode, slug: string): BlogPostMeta | null {
-	return readPostMeta(locale, slug)
+	const meta = readPostMeta(locale, slug)
+	if (!meta) return null
+	
+	// تحسين مسارات الصور - الصور موجودة في /blog/
+	if (meta.frontmatter.coverImage?.url) {
+		const imageUrl = meta.frontmatter.coverImage.url
+		// إذا كان المسار نسبي، تأكد من أنه يبدأ بـ /blog/
+		if (!imageUrl.startsWith('http') && !imageUrl.startsWith('/blog/')) {
+			// إزالة /blog/ إذا كان موجوداً مسبقاً لتجنب التكرار
+			const cleanUrl = imageUrl.replace('/blog/', '').replace('blog/', '')
+			meta.frontmatter.coverImage.url = `/blog/${cleanUrl}`
+		}
+	}
+	
+	return meta
 }
 
 export function getSiblingTranslation(locale: LocaleCode, slug: string): BlogPostMeta | null {
