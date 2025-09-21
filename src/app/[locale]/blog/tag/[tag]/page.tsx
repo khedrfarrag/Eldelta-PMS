@@ -12,6 +12,11 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     return {
         title: locale === 'ar' ? `وسم: ${tag}` : `Tag: ${tag}`,
         description: locale === 'ar' ? `مقالات تحت وسم ${tag}` : `Posts tagged ${tag}`,
+        icons: {
+            icon: '/images/Nav/eldita.svg',
+            shortcut: '/images/Nav/eldita.svg',
+            apple: '/images/Nav/eldita.svg',
+        },
     }
 }
 

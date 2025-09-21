@@ -21,6 +21,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <head>
         {/* Theme is applied safely on the client by ThemeProvider to avoid SSR hydration issues */}
+        <link rel="icon" href="/images/Nav/eldita.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

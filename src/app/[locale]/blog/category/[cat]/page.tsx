@@ -12,6 +12,11 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     return {
         title: locale === 'ar' ? `تصنيف: ${cat}` : `Category: ${cat}`,
         description: locale === 'ar' ? `مقالات ضمن تصنيف ${cat}` : `Posts in category ${cat}`,
+        icons: {
+            icon: '/images/Nav/eldita.svg',
+            shortcut: '/images/Nav/eldita.svg',
+            apple: '/images/Nav/eldita.svg',
+        },
     }
 }
 

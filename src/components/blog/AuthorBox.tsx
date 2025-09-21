@@ -22,49 +22,45 @@ export default function AuthorBox({ author, locale }: AuthorBoxProps) {
   const isRTL = locale === 'ar'
 
 	return (
-    <div className="bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 rounded-2xl p-8 shadow-lg border border-cyan-200 dark:border-cyan-800">
+    <div className=" rounded-2xl p-8 shadow-lg border border-cyan-200 dark:border-cyan-800">
       <div className="flex flex-col md:flex-row gap-6">
         {/* صورة الفريق */}
         <div className="flex-shrink-0">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-            {author.image ? (
-              <Image
-                src={author.image}
-                alt={author.name}
-                width={96}
-                height={96}
-                className="w-full h-full rounded-full object-cover"
-              />
-            ) : (
-              'Δ'
-            )}
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg overflow-hidden">
+            <Image
+              src={author.image || '/images/Nav/eldita.svg'}
+              alt={author.name}
+              width={96}
+              height={96}
+              className="w-full h-full rounded-full object-cover"
+            />
           </div>
         </div>
 
         {/* معلومات الفريق */}
         <div className="flex-1">
           <div className="mb-4">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-3xl font-bold mb-2">
               {author.name}
             </h3>
             <p className="text-lg text-cyan-600 dark:text-cyan-400 font-medium mb-1">
               {author.role}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm ">
               {isRTL ? 'خبرة:' : 'Experience:'} {author.experience}
             </p>
           </div>
 
           {/* التخصصات */}
           <div className="mb-4">
-            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <h4 className="text-sm font-semibold  mb-2">
               {isRTL ? 'التخصصات:' : 'Specializations:'}
             </h4>
             <div className="flex flex-wrap gap-2">
               {author.specializations.map((spec, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 rounded-full text-xs font-medium"
+                  className="px-3 py-1 bg-cyan-100 dark:bg-cyan-900 text-cyan-700 dark:text-cyan-300 rounded-full text-xs font-medium"
                 >
                   {spec}
                 </span>
@@ -74,14 +70,14 @@ export default function AuthorBox({ author, locale }: AuthorBoxProps) {
 
           {/* الإنجازات */}
           <div className="mb-4">
-            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <h4 className="text-sm font-semibold mb-2">
               {isRTL ? 'الإنجازات:' : 'Achievements:'}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {author.achievements.map((achievement, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+                  className="flex items-center gap-2 text-sm "
                 >
                   <div className="w-2 h-2 bg-cyan-500 rounded-full flex-shrink-0"></div>
                   <span>{achievement}</span>
@@ -116,8 +112,8 @@ export default function AuthorBox({ author, locale }: AuthorBoxProps) {
       </div>
 
       {/* رسالة تحفيزية */}
-      <div className="mt-6 p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg border border-cyan-200 dark:border-cyan-700">
-        <p className="text-sm text-gray-700 dark:text-gray-300 text-center">
+      <div className="mt-6 p-4  rounded-lg border border-cyan-200 dark:border-cyan-700">
+        <p className="text-sm text-center">
           {isRTL 
             ? 'فريق الدلتا جاهز لمساعدتك في كل خطوة من خطوات الاستيراد والتصدير. خبرتنا الواسعة وعلاقاتنا القوية مع الموردين حول العالم تضمن نجاح مشروعك.'
             : 'The Eldelta team is ready to help you with every step of import and export. Our extensive experience and strong relationships with suppliers worldwide ensure your project\'s success.'
