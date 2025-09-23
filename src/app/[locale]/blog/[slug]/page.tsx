@@ -249,7 +249,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
 						? ["500+ صفقة ناجحة", "50+ دولة", "1000+ عميل"]
 						: ["500+ successful projects", "50+ countries", "1000+ clients"],
 					contact: "support@eldelta-group.com",
-					phone: "+966 59 837 7921"
+					phone: "+966506113841"
 				}}
 				locale={locale}
 			/>
