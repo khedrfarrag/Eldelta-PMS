@@ -23,10 +23,25 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 export default async function TagPage({ params }: { params: Promise<Params> }) {
 	const { locale, tag } = await params
     if (!['en','ar'].includes(locale)) return notFound()
-    const posts = readAllPostsMeta(locale).filter(p => (p.frontmatter.tags || []).map(t => t.toLowerCase()).includes(tag.toLowerCase()))
+    const { slugifyLabel } = await import('@/lib/blog/slug')
+    const decoded = decodeURIComponent(tag)
+    const targetSlugs = new Set([
+        slugifyLabel(tag),
+        slugifyLabel(decoded),
+        tag.toLowerCase(),
+        decoded.toLowerCase(),
+    ])
+    const postsAll = readAllPostsMeta(locale)
+    const posts = postsAll.filter(p => (p.frontmatter.tags || []).some(t => {
+        const name = (t || '').trim()
+        if (!name) return false
+        const candidates = [slugifyLabel(name), name.toLowerCase()]
+        return candidates.some(c => targetSlugs.has(c))
+    }))
+    const humanName = (posts[0]?.frontmatter.tags || []).find(t => slugifyLabel(t) === slugifyLabel(decoded)) || decoded || tag
     return (
         <section className="max-w-5xl mx-auto px-4 py-10">
-            <h1 className="text-2xl font-bold mb-6">{locale === 'ar' ? `وسم: ${tag}` : `Tag: ${tag}`}</h1>
+            <h1 className="text-2xl font-bold mb-6">{locale === 'ar' ? `وسم: ${humanName}` : `Tag: ${humanName}`}</h1>
             {posts.length === 0 ? <p className="text-gray-500">{locale === 'ar' ? 'لا توجد نتائج.' : 'No results.'}</p> : (
                 <ul className="space-y-4">
                     {posts.map(p => (

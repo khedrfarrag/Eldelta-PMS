@@ -58,7 +58,6 @@ export default async function BlogIndex({ params }: { params: Promise<Params> })
 	const { locale } = await params
 	if (!['en', 'ar'].includes(locale)) return notFound()
 	const posts = readAllPostsMeta(locale)
-
 	return (
 		<div className="min-h-screen ">
 
