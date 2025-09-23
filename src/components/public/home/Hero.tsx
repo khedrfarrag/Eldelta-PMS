@@ -4,8 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import AnimatedThemeToggle from "@/components/shared/Navigation/AnimatedThemeToggle";
-// import mobileheroimg from "../../../../public/images/homepage/homeMobile.png";
-
 export default function Hero() {
   const { language } = useLanguage();
   const isRTL = language === "ar";
@@ -77,15 +75,8 @@ export default function Hero() {
                 {/* Mobile: single line centered */}
                 <span className="md:hidden inline-block dark:text-gray-300 text-center">
                   We connect your business to the world…
-                  <span className="text-[var(--color-primary)]">
-                    {" "}
-                    Export
-                  </span>{" "}
-                  &
-                  <span className="text-[var(--color-primary)]">
-                    {" "}
-                    Import{" "}
-                  </span>{" "}
+                  <span className="text-[var(--color-primary)]"> Export</span> &
+                  <span className="text-[var(--color-primary)]"> Import </span>{" "}
                   <span className="">with ease and safety</span>
                 </span>
                 {/* Desktop: multiline as before */}
@@ -94,14 +85,8 @@ export default function Hero() {
                   <br />
                   business to the world…
                   <br />
-                  <span className="text-[var(--color-primary)]">
-                    Export
-                  </span>{" "}
-                  &
-                  <span className="text-[var(--color-primary)]">
-                    {" "}
-                    Import
-                  </span>
+                  <span className="text-[var(--color-primary)]">Export</span> &
+                  <span className="text-[var(--color-primary)]"> Import</span>
                   <br />
                   <span className="ml-7">with ease and safety</span>
                 </span>
@@ -120,8 +105,11 @@ export default function Hero() {
         {/* Description card */}
         {/* Desktop description card at bottom-left */}
         <div
-          className="hidden md:block absolute bottom-30 left-0 max-w-[500px] z-10"
-          dir={isRTL ? "rtl" : "ltr"}
+          className={`hidden md:block absolute z-10 text-[var(--color-primary)]/50 rounded-b-4xl ${
+            isRTL
+              ? "md:text-4xl lg:text-6xl h-38  md:max-w-[15ch] font-thin bottom-30 left-0 text-right "
+              : "md:text-4xl lg:text-5xl h-48 md:max-w-[15ch] bottom-25 left-10 text-left font-bold md:translate-x-6"
+          }`}
         >
           <div className="p-6">
             <p className=" text-xl leading-relaxed font-bold ">

@@ -105,7 +105,7 @@ export default function CreateReview({ initialName = "", locale, className = "",
                   onClick={() => setRating(v)}
                   disabled={loading}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={`w-7 h-7 ${active ? "text-[var(--color-primary)]" : "text-gray-300 dark:text-gray-600"} cursor-pointer`} fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={`w-7 h-7 ${active ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"} cursor-pointer`} fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.75.75 0 011.04.39l1.56 3.736a.75.75 0 00.61.46l4.052.35a.75.75 0 01.42 1.317l-3.06 2.63a.75.75 0 00-.24.77l.94 3.9a.75.75 0 01-1.12.83l-3.43-2.07a.75.75 0 00-.78 0l-3.43 2.07a.75.75 0 01-1.12-.83l.94-3.9a.75.75 0 00-.24-.77l-3.06-2.63a.75.75 0 01.42-1.318l4.053-.35a.75.75 0 00.61-.46l1.56-3.735a.75.75 0 01.39-.39z" />
                   </svg>
                 </button>
