@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
+import SiteReviewModal from "@/components/reviews/SiteReviewModal";
 import { useParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useForm } from "react-hook-form";
@@ -58,6 +59,7 @@ export default function ServiceFormWizard() {
   }, [params]);
 
   const [submitting, setSubmitting] = useState(false);
+  const [showReview, setShowReview] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successId, setSuccessId] = useState<string | null>(null);
 
@@ -262,6 +264,7 @@ export default function ServiceFormWizard() {
 
       const { data } = await requestsAPI.create(payload);
       setSuccessId(data?.requestId || null);
+      setShowReview(true);
       setStep(7);
     } catch (e: any) {
       
@@ -524,6 +527,7 @@ export default function ServiceFormWizard() {
             </button>
           )}
         </div>
+        <SiteReviewModal open={showReview} onClose={() => setShowReview(false)} locale={isRTL ? 'ar' : 'en'} />
       </div>
     </section>
   );
