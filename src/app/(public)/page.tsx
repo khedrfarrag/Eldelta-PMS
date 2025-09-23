@@ -5,6 +5,7 @@ import ProductCategories from "@/components/public/home/ProductCategories";
 import WhyChoooseUS from "@/components/public/home/WhyChoooseUS";
 import ReviewsClint from "@/components/public/home/ReviewsClint";
 import ContactInfo from "@/components/public/home/ContactInfo";
+import CreateReview from "@/components/public/AddReview/CreateReview";
 export default function PublicHomePage() {
   return (
     <>
@@ -15,6 +16,7 @@ export default function PublicHomePage() {
       <WhyChoooseUS />
       <ReviewsClint />
       <ContactInfo />
+      <CreateReview />
     </>
   );
 }

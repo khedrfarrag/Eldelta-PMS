@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import SiteReviewModal from "@/components/reviews/SiteReviewModal";
 import { useParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useForm } from "react-hook-form";
@@ -32,7 +33,10 @@ export default function ImportForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [showReview, setShowReview] = useState(false);
+  const [readyToOpenReview, setReadyToOpenReview] = useState(false);
   const [step, setStep] = useState<Step>(1);
+  const [reviewDone, setReviewDone] = useState(false);
   const [uploadingPdf, setUploadingPdf] = useState(false);
   const [uploadedPdfUrl, setUploadedPdfUrl] = useState<string | null>(null);
 
@@ -241,9 +245,7 @@ export default function ImportForm() {
       
       if (response.data.success) {
         setSuccess(true);
-        setTimeout(() => {
-          router.push('/services');
-        }, 3000);
+        setTimeout(() => setShowReview(true), 1200);
       }
     } catch (error: any) {
       console.error('Error submitting form:', error);
@@ -266,7 +268,7 @@ export default function ImportForm() {
     );
   }
 
-  if (success) {
+  if (success && !reviewDone) {
     return (
       <div className="min-h-screen flex items-center justify-center ">
         <div className="max-w-md w-full  rounded-lg shadow-lg p-8 text-center">
@@ -276,6 +278,30 @@ export default function ImportForm() {
           </h2>
           <p className=" mb-6" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'سيتم التواصل معك قريباً لتأكيد التفاصيل' : 'We will contact you soon to confirm the details'}
+          </p>
+          <button
+            onClick={() => router.push('/services')}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            {isRTL ? 'العودة للخدمات' : 'Back to Services'}
+          </button>
+        </div>
+        {/* Show site review modal after success, navigate after submitted */}
+        <SiteReviewModal open={showReview} initialName={getValues('customerName')} onClose={() => setShowReview(false)} onSubmitted={() => setReviewDone(true)} locale={isRTL ? 'ar' : 'en'} />
+      </div>
+    );
+  }
+
+  if (success && reviewDone) {
+    return (
+      <div className="min-h-screen flex items-center justify-center ">
+        <div className="max-w-md w-full  rounded-lg shadow-lg p-8 text-center">
+          <div className="text-green-600 text-6xl mb-4">✓</div>
+          <h2 className="text-2xl font-bold  mb-4" dir={isRTL ? "rtl" : "ltr"}>
+            {isRTL ? 'تم إرسال تقييمك بنجاح!' : 'Your review has been submitted!'}
+          </h2>
+          <p className=" mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            {isRTL ? 'شكراً لثقتك فينا — الدلتا للاستيراد والتصدير' : 'Thanks for your trust — Eldelta Import & Export'}
           </p>
           <button
             onClick={() => router.push('/services')}
@@ -913,6 +939,7 @@ export default function ImportForm() {
           </form>
         </div>
       </div>
+      <SiteReviewModal open={showReview} initialName={getValues('customerName')} onClose={() => setShowReview(false)} onSubmitted={() => setReviewDone(true)} locale={isRTL ? 'ar' : 'en'} />
     </div>
   );
 }
