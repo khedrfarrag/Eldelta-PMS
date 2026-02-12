@@ -43,7 +43,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-black/40 md:hidden" />
 
         {/* Headline block */}
-        <div className="absolute top-1/2 left-0 right-0 flex flex-col justify-center items-center text-center p-4 z-10 md:block md:w-auto md:h-auto md:top-0 md:right-5 md:bottom-auto md:left-auto md:text-right md:p-0">
+        <div className="absolute top-1/2  left-0 right-0 flex flex-col justify-center items-center text-center p-4 z-10 md:block md:w-auto md:h-auto md:top-0 md:right-5 md:bottom-auto md:left-auto md:text-right md:p-0">
           <h1
             className={`leading-snug text-2xl sm:text-3xl text-center md:text-right  ${
               isRTL
@@ -74,7 +74,7 @@ export default function Hero() {
             ) : (
               <>
                 {/* Mobile: single line centered */}
-                <span className="md:hidden text-3xl inline-block dark:text-gray-300 text-center">
+                <span className="md:hidden text-2xl inline-block dark:text-gray-300 text-center">
                   We connect your business to the world…
                   <span className="text-[var(--color-primary)]"> Export</span> &
                   <span className="text-[var(--color-primary)]"> Import </span>{" "}
@@ -104,7 +104,7 @@ export default function Hero() {
 
           {/* Mobile-only Button (Centered) */}
           <button
-            className="md:hidden mt-16 px-6 py-3 rounded-full font-medium transition-colors flex items-center space-x-2 hover:opacity-80 cursor-pointer bg-[var(--color-primary)] text-white shadow-lg"
+            className="md:hidden mt-8 px-6 py-3 rounded-full font-medium transition-colors flex items-center space-x-2 hover:opacity-80 cursor-pointer bg-[var(--color-primary)] text-white shadow-lg"
             onClick={() => router.push("/services")}
           >
             <span className="text-sm">
