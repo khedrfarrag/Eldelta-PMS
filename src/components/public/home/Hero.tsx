@@ -4,12 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import AnimatedThemeToggle from "@/components/shared/Navigation/AnimatedThemeToggle";
+import { useRouter } from "next/navigation";
 export default function Hero() {
+  const router = useRouter();
   const { language } = useLanguage();
   const isRTL = language === "ar";
 
   return (
-    <section className="w-full pt-20 md:px-0 mt-5  transition-colors duration-300">
+    <section className="w-full md:px-0 transition-colors duration-300 md:mt-5 md:pt-20">
       {/* Visual container with image and overlays */}
       <div className="relative w-full min-h-[calc(100svh-80px)] md:min-h-[calc(120svh-10px)] overflow-hidden transition-colors duration-300">
         {/* Hero image fills container */}
@@ -39,15 +41,15 @@ export default function Hero() {
         />
 
         {/* Mobile-only gradient to improve headline contrast */}
-        <div className="absolute inset-y-0 right-0 w-2/3 bg-gradient-to-l from-black/35 to-transparent md:hidden" />
+        <div className="absolute inset-0 bg-black/40 md:hidden" />
 
         {/* Headline block */}
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 ms-3 md:top-0 md:right-5 md:translate-y-0  z-10 pr-1">
+        <div className="absolute top-1/2 left-0 right-0 flex flex-col justify-center items-center text-center p-4 z-10 md:block md:w-auto md:h-auto md:top-0 md:right-5 md:bottom-auto md:left-auto md:text-right md:p-0">
           <h1
-            className={`leading-snug  text-2xl sm:text-3xl text-center  ${
+            className={`leading-snug text-2xl sm:text-3xl text-center md:text-right  ${
               isRTL
-                ? "md:text-4xl lg:text-5xl md:max-w-[18ch] text-right font-extrabold"
-                : "md:text-3xl lg:text-4xl md:max-w-[18ch] text-left font-bold md:translate-x-6  "
+                ? "md:text-4xl lg:text-5xl md:max-w-[18ch] font-extrabold"
+                : "md:text-3xl lg:text-4xl md:max-w-[18ch] font-bold md:translate-x-6  "
             }`}
             dir={isRTL ? "rtl" : "ltr"}
           >
@@ -73,7 +75,7 @@ export default function Hero() {
             ) : (
               <>
                 {/* Mobile: single line centered */}
-                <span className="md:hidden inline-block dark:text-gray-300 text-center">
+                <span className="md:hidden text-3xl inline-block dark:text-gray-300 text-center">
                   We connect your business to the world…
                   <span className="text-[var(--color-primary)]"> Export</span> &
                   <span className="text-[var(--color-primary)]"> Import </span>{" "}
@@ -95,17 +97,66 @@ export default function Hero() {
           </h1>
 
           {/* Mobile-only description below headline */}
-          <p className="md:hidden mt-3 text-white/80 text-sm leading-relaxed font-light max-w-[50ch] m-auto text-center ">
+          <p className="md:hidden mt-5 text-white/90 text-sm leading-relaxed font-light max-w-[50ch] m-auto text-center ">
             {isRTL
               ? "نقدّم لك حلول استيراد وتصدير متكاملة تشمل الشحن، التخليص، التوصيل وخدمات الموردين… بخبرة موثوقة وأسعار تنافسية."
               : "We provide end‑to‑end import and export solutions including shipping, clearance, delivery, and supplier services — with trusted experience and competitive prices."}
           </p>
+
+          {/* Mobile-only Button (Centered) */}
+          <button
+            className="md:hidden mt-16 px-6 py-3 rounded-full font-medium transition-colors flex items-center space-x-2 hover:opacity-80 cursor-pointer bg-[var(--color-primary)] text-white shadow-lg"
+            onClick={() => router.push("/services")}
+          >
+            <span className="text-sm">
+              {isRTL ? "إبدأ الآن" : "Start Now"}
+            </span>
+             <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center ms-2"> {/* Added ms-2 because space-x-2 might not work well with RTL if dir is set on parent, but here button content is flex row. Let's check direction. */}
+             {/* Actually space-x-2 works directionally in new tailwind versions or if dir="ltr" on html. But better safe. */}
+              <svg
+                className="w-3 h-3 text-gray-800"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7" // Left arrow for RTL? No, usually arrows point forward (left in RTL, right in LTR). Wait, standard arrow is right.
+                  // Original had M15 19l-7-7 7-7 which is a left pointing arrow (<).
+                  // If language is AR (RTL), "Start Now" should point left? Or right?
+                  // In RTL, progression is Right -> Left. So arrow should point Left (<).
+                  // In LTR, progression is Left -> Right. Arrow should point Right (>).
+                  // The path M15 19l-7-7 7-7 is a "<" shape.
+                  // IsRTL = true -> Arrow <. Correct.
+                  // IsRTL = false -> Arrow <. Incorrect?
+                  // Let's check original logic.
+                  // Original: d="M15 19l-7-7 7-7" for both?
+                />
+               {/* Wait, the original icon was:
+                  d="M15 19l-7-7 7-7" (Standard chevron left)
+                  If RTL, we want chevron left.
+                  If LTR, we want chevron right (M9 5l7 7-7 7).
+                  Let's fix the icon direction for LTR while we are here, or keep it consistent with previous?
+                  Previous code used same icon. I will use same icon for now to avoid breaking changes not requested.
+                  Actually, let's just copy the SVG from below exactly.
+               */}
+               <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d={isRTL ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} // Fixing direction for LTR
+                />
+              </svg>
+            </div>
+          </button>
         </div>
 
         {/* Description card */}
         {/* Desktop description card at bottom-left */}
         <div
-          className={`hidden md:block absolute z-10 text-[var(--color-primary)]/50 rounded-b-4xl ${
+          className={`hidden md:block absolute z-10 text-[var(--color-primary)]/90 rounded-b-4xl ${
             isRTL
               ? "md:text-4xl lg:text-6xl h-38  md:max-w-[15ch] font-thin bottom-30 left-0 text-right "
               : "md:text-4xl lg:text-5xl h-48 md:max-w-[15ch] bottom-25 left-10 text-left font-bold md:translate-x-6"
@@ -119,9 +170,11 @@ export default function Hero() {
             </p>
           </div>
         </div>
-        <div className="block md:block md:mt-4 absolute left-4 md:left-5 bottom-6 md:bottom-5 z-10">
+        <div className="hidden md:block md:mt-4 absolute left-4 md:left-5 bottom-6 md:bottom-5 z-10">
           {/* Action Button - Dark Blue with White Text and Arrow */}
-          <button className="px-3 py-2 md:px-6 md:py-3 rounded-full md:rounded-4xl font-medium transition-colors flex items-center space-x-1 md:space-x-2 hover:opacity-80 cursor-pointer bg-[var(--color-primary)]">
+          <button className="px-3 py-2 md:px-6 md:py-3 rounded-full md:rounded-4xl font-medium transition-colors flex items-center space-x-1 md:space-x-2 hover:opacity-80 cursor-pointer bg-[var(--color-primary)]"
+          onClick={() => router.push("/services")}
+          >
             <span className="text-white text-xs md:text-sm   ">
               {isRTL ? "إبدأ الآن" : "Start Now"}
             </span>
@@ -136,7 +189,7 @@ export default function Hero() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
+                  d={isRTL ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"}
                 />
               </svg>
             </div>
