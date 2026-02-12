@@ -13,7 +13,7 @@ export const revalidate = 3600
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
     const { locale } = await params
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eldelta.com'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eldelta-group.com'
     
     return {
         title: locale === 'ar' ? 'المدونة - الدلتا للاستيراد والتصدير' : 'Blog - Eldelta Import & Export',

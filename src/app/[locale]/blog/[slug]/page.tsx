@@ -239,7 +239,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
 				{/* Author Box */}
 			<AuthorBox 
 				author={{
-					name: "فريق الدلتا",
+					name: locale === 'ar' ? "فريق الدلتا" : "Eldelta Team",
 					role: locale === 'ar' ? "خبراء الاستيراد والتصدير" : "Import & Export Experts",
 					experience: locale === 'ar' ? "أكثر من 10 سنوات" : "Over 10 years",
 					specializations: locale === 'ar' 
