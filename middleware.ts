@@ -16,16 +16,16 @@ export function middleware(request: NextRequest) {
   }
   
   // Check if the pathname has a locale
-  const pathnameHasLocale = locales.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  )
+  // const pathnameHasLocale = locales.some(
+  //   (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  // )
 
-  if (pathnameHasLocale) return
+  // if (pathnameHasLocale) return
 
   // Redirect if there is no locale
-  const locale = defaultLocale
-  request.nextUrl.pathname = `/${locale}${pathname}`
-  return NextResponse.redirect(request.nextUrl)
+  // const locale = defaultLocale
+  // request.nextUrl.pathname = `/${locale}${pathname}`
+  // return NextResponse.redirect(request.nextUrl)
 }
 
 export const config = {
