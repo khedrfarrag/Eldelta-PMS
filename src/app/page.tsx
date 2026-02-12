@@ -38,7 +38,6 @@ export default function HomePage() {
       </div>
     );
   }
-  // If not authenticated, show public homepage content directly
   if (!isAuthenticated) {
     return (
       <>
