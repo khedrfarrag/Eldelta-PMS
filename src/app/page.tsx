@@ -15,7 +15,6 @@ export default function HomePage() {
   useEffect(() => {
     if (!isLoading) {
       if (isAuthenticated && user) {
-        // Redirect authenticated users to their dashboard
         if (user.role === "super_admin") {
           router.push("/super-admin/dashboard");
         } else if (user.role === "admin") {
@@ -25,7 +24,6 @@ export default function HomePage() {
     }
   }, [user, isAuthenticated, isLoading, router]);
 
-  // Show loading while checking auth
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -38,7 +36,6 @@ export default function HomePage() {
       </div>
     );
   }
-  // If not authenticated, show public homepage content directly
   if (!isAuthenticated) {
     return (
       <>
@@ -49,6 +46,5 @@ export default function HomePage() {
     );
   }
 
-  // This should not render if redirects work properly
   return null;
 }
