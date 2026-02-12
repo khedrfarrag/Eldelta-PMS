@@ -1,3 +1,4 @@
+'use client'
 import ServiceCard from ".././home/ServiceCard";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useServices } from "@/hooks/useServices";
