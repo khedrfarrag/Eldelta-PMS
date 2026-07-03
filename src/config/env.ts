@@ -1,17 +1,27 @@
 import { z } from 'zod'
 
+// Load environment variables from .env.local (only in development)
+if (typeof window === 'undefined' && process.env.NODE_ENV === 'development') {
+  const path = require('path')
+  const fs = require('fs')
+  const envPath = path.resolve(process.cwd(), '.env.local')
+  if (fs.existsSync(envPath)) {
+    require('dotenv').config({ path: envPath })
+  }
+}
+
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   MONGODB_URI: z.string().min(1, 'MONGODB_URI is required'),
   MONGODB_DB: z.string().min(1, 'MONGODB_DB is required'),
   JWT_SECRET: z.string().min(16, 'JWT_SECRET must be at least 16 characters'),
   JWT_EXPIRES_IN: z.string().default('7d'),
-  NEXTAUTH_SECRET: z.string().optional(),
-  NEXTAUTH_URL: z.string().optional(),
-  EMAIL_HOST: z.string().optional(),
-  EMAIL_PORT: z.string().optional(),
-  EMAIL_USER: z.string().optional(),
-  EMAIL_PASS: z.string().optional(),
+  NEXTAUTH_SECRET: z.string().default('default-nextauth-secret'),
+  NEXTAUTH_URL: z.string().default('http://localhost:3000'),
+  EMAIL_HOST: z.string().default('smtp.gmail.com'),
+  EMAIL_PORT: z.string().default('587'),
+  EMAIL_USER: z.string().default(''),
+  EMAIL_PASS: z.string().default(''),
 })
 
 const parsed = envSchema.safeParse({
@@ -40,5 +50,3 @@ if (!parsed.success) {
 export const env = parsed.data
 
 export type AppEnv = z.infer<typeof envSchema>
-
-

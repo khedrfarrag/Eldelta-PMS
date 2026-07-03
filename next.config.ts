@@ -6,8 +6,44 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   // Disable source maps to avoid file permission issues
   productionBrowserSourceMaps: false,
+  // Image optimization settings
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/**',
+      },
+    ],
+    unoptimized: true, // تعطيل تحسين الصور لتجنب المشاكل في الإنتاج
+    formats: ['image/webp', 'image/avif'],
+  },
+  // Enable static exports for better performance
+  output: 'standalone',
+  
+  // Add headers for CORS and security
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

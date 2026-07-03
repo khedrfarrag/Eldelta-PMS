@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import SiteReviewModal from "@/components/reviews/SiteReviewModal";
 import { useParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useForm } from "react-hook-form";
@@ -32,7 +33,12 @@ export default function ImportForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [showReview, setShowReview] = useState(false);
+  const [readyToOpenReview, setReadyToOpenReview] = useState(false);
   const [step, setStep] = useState<Step>(1);
+  const [reviewDone, setReviewDone] = useState(false);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [uploadedPdfUrl, setUploadedPdfUrl] = useState<string | null>(null);
 
   type FormValues = {
     // الخطوة 1: البيانات الأساسية
@@ -44,6 +50,7 @@ export default function ImportForm() {
     // الخطوة 2: بيانات المنتج
     productType: string;
     productSpecifications: string;
+    productSpecsPdfUrl?: string;
     estimatedQuantity: string;
     importFrequency: 'once' | 'monthly' | 'quarterly' | 'yearly';
     
@@ -55,6 +62,7 @@ export default function ImportForm() {
     preferredDeliveryMethod: string;
     readyDate: string;
     desiredArrivalDate: string;
+    hasShippingPlan?: boolean;
     
     // الخطوة 4: الخدمات الإضافية
     additionalServices: string[];
@@ -114,7 +122,13 @@ export default function ImportForm() {
         const data = await res.json()
         if (!isMounted) return
         if (data?.service) {
-          setService({ _id: data.service._id, name: data.service.name, description: data.service.description })
+          const nameText = typeof data.service.name === 'string'
+            ? data.service.name
+            : (data.service.name?.[language] || data.service.name?.ar || data.service.name?.en || '')
+          const descText = typeof data.service.description === 'string'
+            ? data.service.description
+            : (data.service.description?.[language] || data.service.description?.ar || data.service.description?.en || '')
+          setService({ _id: data.service._id, name: nameText, description: descText })
         }
       } catch (e) {
         console.error('Error fetching service:', e)
@@ -170,6 +184,44 @@ export default function ImportForm() {
     setValue('additionalServices', newServices);
   };
 
+  const handleFileUpload = async (file: File) => {
+    if (file.type !== 'application/pdf') {
+      setError(isRTL ? 'يجب أن يكون الملف بصيغة PDF' : 'File must be a PDF');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB
+      setError(isRTL ? 'حجم الملف يجب أن يكون أقل من 10 ميجابايت' : 'File size must be less than 10MB');
+      return;
+    }
+
+    setUploadingPdf(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setUploadedPdfUrl(result.url);
+        setValue('productSpecsPdfUrl', result.url);
+      } else {
+        setError(result.error || (isRTL ? 'فشل في رفع الملف' : 'Failed to upload file'));
+      }
+    } catch (error) {
+      setError(isRTL ? 'حدث خطأ أثناء رفع الملف' : 'Error uploading file');
+    } finally {
+      setUploadingPdf(false);
+    }
+  };
+
   const onSubmit = async (vals: FormValues) => {
     if (!serviceId) {
       setError(isRTL ? 'معرف الخدمة مطلوب' : 'Service ID is required');
@@ -193,9 +245,7 @@ export default function ImportForm() {
       
       if (response.data.success) {
         setSuccess(true);
-        setTimeout(() => {
-          router.push('/services');
-        }, 3000);
+        setTimeout(() => setShowReview(true), 1200);
       }
     } catch (error: any) {
       console.error('Error submitting form:', error);
@@ -210,7 +260,7 @@ export default function ImportForm() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+          <p className="mt-4 " dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'جاري تحميل النموذج...' : 'Loading form...'}
           </p>
         </div>
@@ -218,16 +268,40 @@ export default function ImportForm() {
     );
   }
 
-  if (success) {
+  if (success && !reviewDone) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center ">
+        <div className="max-w-md w-full  rounded-lg shadow-lg p-8 text-center">
           <div className="text-green-600 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4" dir={isRTL ? "rtl" : "ltr"}>
+          <h2 className="text-2xl font-bold  mb-4" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'تم إرسال طلبك بنجاح!' : 'Request submitted successfully!'}
           </h2>
-          <p className="text-gray-600 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+          <p className=" mb-6" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'سيتم التواصل معك قريباً لتأكيد التفاصيل' : 'We will contact you soon to confirm the details'}
+          </p>
+          <button
+            onClick={() => router.push('/services')}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            {isRTL ? 'العودة للخدمات' : 'Back to Services'}
+          </button>
+        </div>
+        {/* Show site review modal after success, navigate after submitted */}
+        <SiteReviewModal open={showReview} initialName={getValues('customerName')} onClose={() => setShowReview(false)} onSubmitted={() => setReviewDone(true)} locale={isRTL ? 'ar' : 'en'} />
+      </div>
+    );
+  }
+
+  if (success && reviewDone) {
+    return (
+      <div className="min-h-screen flex items-center justify-center ">
+        <div className="max-w-md w-full  rounded-lg shadow-lg p-8 text-center">
+          <div className="text-green-600 text-6xl mb-4">✓</div>
+          <h2 className="text-2xl font-bold  mb-4" dir={isRTL ? "rtl" : "ltr"}>
+            {isRTL ? 'تم إرسال تقييمك بنجاح!' : 'Your review has been submitted!'}
+          </h2>
+          <p className=" mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            {isRTL ? 'شكراً لثقتك فينا — الدلتا للاستيراد والتصدير' : 'Thanks for your trust — Eldelta Import & Export'}
           </p>
           <button
             onClick={() => router.push('/services')}
@@ -245,13 +319,13 @@ export default function ImportForm() {
       case 1:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <h2 className="text-2xl font-bold  mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'البيانات الأساسية' : 'Basic Information'}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الاسم الكامل *' : 'Full Name *'}
                 </label>
                 <input
@@ -273,7 +347,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'اسم الشركة / النشاط التجاري *' : 'Company / Business Name *'}
                 </label>
                 <input
@@ -295,7 +369,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'رقم الهاتف (واتساب) *' : 'Phone Number (WhatsApp) *'}
                 </label>
                 <input
@@ -320,7 +394,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'البريد الإلكتروني *' : 'Email Address *'}
                 </label>
                 <input
@@ -350,12 +424,12 @@ export default function ImportForm() {
       case 2:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <h2 className="text-2xl font-bold  mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'بيانات المنتج' : 'Product Information'}
             </h2>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'نوع المنتجات التي ترغب في استيرادها *' : 'Type of products you want to import *'}
               </label>
               <select
@@ -365,9 +439,9 @@ export default function ImportForm() {
                 }`}
                 dir={isRTL ? "rtl" : "ltr"}
               >
-                <option value="">{isRTL ? 'اختر نوع المنتج' : 'Select product type'}</option>
+                <option value="" className="text-gray-900">{isRTL ? 'اختر نوع المنتج' : 'Select product type'}</option>
                 {PRODUCT_CATEGORIES.map(cat => (
-                  <option key={cat.value} value={cat.value}>{isRTL ? cat.labelAr : cat.labelEn}</option>
+                  <option key={cat.value} value={cat.value} className="text-gray-900">{isRTL ? cat.labelAr : cat.labelEn}</option>
                 ))}
               </select>
               {errors.productType && (
@@ -378,7 +452,7 @@ export default function ImportForm() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'هل لديك مواصفات محددة للمنتجات (مقاسات، ألوان، جودة...)؟ *' : 'Do you have specific product specifications (dimensions, colors, quality...)? *'}
               </label>
               <textarea
@@ -399,10 +473,68 @@ export default function ImportForm() {
                 </p>
               )}
             </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                {isRTL ? 'رفع ملف PDF للمواصفات (اختياري)' : 'Upload PDF file for specifications (optional)'}
+              </label>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(file);
+                  }}
+                  className="hidden"
+                  id="pdf-upload"
+                  disabled={uploadingPdf}
+                />
+                <label
+                  htmlFor="pdf-upload"
+                  className={`cursor-pointer flex flex-col items-center space-y-2 ${
+                    uploadingPdf ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {uploadingPdf ? (
+                    <>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                      <p className="text-sm text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+                        {isRTL ? 'جاري الرفع...' : 'Uploading...'}
+                      </p>
+                    </>
+                  ) : uploadedPdfUrl ? (
+                    <>
+                      <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-sm text-green-600" dir={isRTL ? "rtl" : "ltr"}>
+                        {isRTL ? 'تم رفع الملف بنجاح' : 'File uploaded successfully'}
+                      </p>
+                      <p className="text-xs text-gray-500" dir={isRTL ? "rtl" : "ltr"}>
+                        {uploadedPdfUrl.split('/').pop()}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                      <p className="text-sm text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+                        {isRTL ? 'اضغط لرفع ملف PDF' : 'Click to upload PDF file'}
+                      </p>
+                      <p className="text-xs text-gray-500" dir={isRTL ? "rtl" : "ltr"}>
+                        {isRTL ? 'الحد الأقصى 10 ميجابايت' : 'Max 10MB'}
+                      </p>
+                    </>
+                  )}
+                </label>
+              </div>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الكمية التقديرية المطلوبة *' : 'Estimated quantity required *'}
                 </label>
                 <input
@@ -428,7 +560,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'عدد مرات الاستيراد المتوقعة *' : 'Expected import frequency *'}
                 </label>
                 <select
@@ -440,10 +572,10 @@ export default function ImportForm() {
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
                 >
-                  <option value="once">{isRTL ? 'مرة واحدة' : 'Once'}</option>
-                  <option value="monthly">{isRTL ? 'شهري' : 'Monthly'}</option>
-                  <option value="quarterly">{isRTL ? 'ربع سنوي' : 'Quarterly'}</option>
-                  <option value="yearly">{isRTL ? 'سنوي' : 'Yearly'}</option>
+                  <option value="once" className="text-gray-900">{isRTL ? 'مرة واحدة' : 'Once'}</option>
+                  <option value="monthly" className="text-gray-900">{isRTL ? 'شهري' : 'Monthly'}</option>
+                  <option value="quarterly" className="text-gray-900">{isRTL ? 'ربع سنوي' : 'Quarterly'}</option>
+                  <option value="yearly" className="text-gray-900">{isRTL ? 'سنوي' : 'Yearly'}</option>
                 </select>
                 {errors.importFrequency && (
                   <p className="mt-1 text-sm text-red-600" dir={isRTL ? "rtl" : "ltr"}>
@@ -464,7 +596,7 @@ export default function ImportForm() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'من أي دولة ترغب في الاستيراد؟ *' : 'From which country do you want to import? *'}
                 </label>
                 <input
@@ -487,7 +619,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'إلى أي ميناء أو بلد تريد وصول الشحنة؟ *' : 'To which port or country do you want the shipment to arrive? *'}
                 </label>
                 <input
@@ -510,7 +642,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'القيمة التقديرية للشحنة (بالدولار أو العملة المحلية) *' : 'Estimated value of shipment (in USD or local currency) *'}
                 </label>
                 <input
@@ -536,7 +668,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'طريقة الشحن المفضلة *' : 'Preferred shipping method *'}
                 </label>
                 <select
@@ -548,11 +680,11 @@ export default function ImportForm() {
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
                 >
-                  <option value="">{isRTL ? 'اختر طريقة الشحن' : 'Select shipping method'}</option>
-                  <option value="sea">{isRTL ? 'بحري' : 'Sea'}</option>
-                  <option value="air">{isRTL ? 'جوي' : 'Air'}</option>
-                  <option value="land">{isRTL ? 'بري' : 'Land'}</option>
-                  <option value="express">{isRTL ? 'سريع' : 'Express'}</option>
+                  <option value="" className="text-gray-900">{isRTL ? 'اختر طريقة الشحن' : 'Select shipping method'}</option>
+                  <option value="sea" className="text-gray-900">{isRTL ? 'بحري' : 'Sea'}</option>
+                  <option value="air" className="text-gray-900">{isRTL ? 'جوي' : 'Air'}</option>
+                  <option value="land" className="text-gray-900">{isRTL ? 'بري' : 'Land'}</option>
+                  <option value="express" className="text-gray-900">{isRTL ? 'سريع' : 'Express'}</option>
                 </select>
                 {errors.preferredShippingMethod && (
                   <p className="mt-1 text-sm text-red-600" dir={isRTL ? "rtl" : "ltr"}>
@@ -562,7 +694,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'طريقة التسليم المفضلة *' : 'Preferred delivery method *'}
                 </label>
                 <select
@@ -574,11 +706,11 @@ export default function ImportForm() {
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
                 >
-                  <option value="">{isRTL ? 'اختر طريقة التسليم' : 'Select delivery method'}</option>
-                  <option value="door-to-door">{isRTL ? 'Door to Door' : 'Door to Door'}</option>
-                  <option value="port-to-port">{isRTL ? 'Port to Port' : 'Port to Port'}</option>
-                  <option value="cif">{isRTL ? 'CIF' : 'CIF'}</option>
-                  <option value="fob">{isRTL ? 'FOB' : 'FOB'}</option>
+                  <option value="" className="text-gray-900">{isRTL ? 'اختر طريقة التسليم' : 'Select delivery method'}</option>
+                  <option value="door-to-door" className="text-gray-900">{isRTL ? 'Door to Door' : 'Door to Door'}</option>
+                  <option value="port-to-port" className="text-gray-900">{isRTL ? 'Port to Port' : 'Port to Port'}</option>
+                  <option value="cif" className="text-gray-900">{isRTL ? 'CIF' : 'CIF'}</option>
+                  <option value="fob" className="text-gray-900">{isRTL ? 'FOB' : 'FOB'}</option>
                 </select>
                 {errors.preferredDeliveryMethod && (
                   <p className="mt-1 text-sm text-red-600" dir={isRTL ? "rtl" : "ltr"}>
@@ -588,7 +720,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل لديك موعد محدد للشحن أو خطة زمنية؟' : 'Do you have a specific shipping date or timeline?'}
                 </label>
                 <input
@@ -599,7 +731,7 @@ export default function ImportForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'تاريخ الوصول المطلوب' : 'Desired arrival date'}
                 </label>
                 <input
@@ -608,6 +740,21 @@ export default function ImportForm() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                {isRTL ? 'هل لديك موعد محدد للشحن أو خطة زمنية؟' : 'Do you have a specific shipping schedule or timeline?'}
+              </label>
+              <select
+                {...register('hasShippingPlan')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                dir={isRTL ? "rtl" : "ltr"}
+              >
+                <option value="" className="text-gray-900">{isRTL ? 'اختر...' : 'Select...'}</option>
+                <option value="true" className="text-gray-900">{isRTL ? 'نعم' : 'Yes'}</option>
+                <option value="false" className="text-gray-900">{isRTL ? 'لا' : 'No'}</option>
+              </select>
             </div>
           </div>
         );
@@ -620,7 +767,7 @@ export default function ImportForm() {
             </h2>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium mb-3" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'هل تحتاج خدمات إضافية؟' : 'Do you need additional services?'}
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -638,7 +785,7 @@ export default function ImportForm() {
                       onChange={() => handleCheckboxChange(service.key)}
                       className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
-                    <span className="text-sm text-gray-700" dir={isRTL ? "rtl" : "ltr"}>{service.key}</span>
+                    <span className="text-sm" dir={isRTL ? "rtl" : "ltr"}>{service.key}</span>
                   </label>
                 ))}
               </div>
@@ -651,7 +798,7 @@ export default function ImportForm() {
                   {...register('customsAssistance')}
                   className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label className="text-sm text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="text-sm" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل ترغب بالمساعدة في استكمال الأوراق الجمركية؟' : 'Do you need help completing customs paperwork?'}
                 </label>
               </div>
@@ -662,7 +809,7 @@ export default function ImportForm() {
                   {...register('consultationNeeded')}
                   className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label className="text-sm text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="text-sm" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل ترغب في التواصل مع أحد مستشارينا لمناقشة تفاصيل أكثر؟' : 'Would you like to contact one of our consultants to discuss more details?'}
                 </label>
               </div>
@@ -678,7 +825,7 @@ export default function ImportForm() {
             </h2>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'كيف سمعت عن خدماتنا؟' : 'How did you hear about our services?'}
               </label>
               <select
@@ -686,18 +833,18 @@ export default function ImportForm() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 dir={isRTL ? "rtl" : "ltr"}
               >
-                <option value="">{isRTL ? 'اختر...' : 'Select...'}</option>
-                <option value="google">{isRTL ? 'جوجل' : 'Google'}</option>
-                <option value="facebook">{isRTL ? 'فيسبوك' : 'Facebook'}</option>
-                <option value="instagram">{isRTL ? 'انستقرام' : 'Instagram'}</option>
-                <option value="twitter">{isRTL ? 'تويتر' : 'Twitter'}</option>
-                <option value="friend">{isRTL ? 'صديق' : 'Friend'}</option>
-                <option value="other">{isRTL ? 'أخرى' : 'Other'}</option>
+                <option value="" className="text-gray-900">{isRTL ? 'اختر...' : 'Select...'}</option>
+                <option value="google" className="text-gray-900">{isRTL ? 'جوجل' : 'Google'}</option>
+                <option value="facebook" className="text-gray-900">{isRTL ? 'فيسبوك' : 'Facebook'}</option>
+                <option value="instagram" className="text-gray-900">{isRTL ? 'انستقرام' : 'Instagram'}</option>
+                <option value="twitter" className="text-gray-900">{isRTL ? 'تويتر' : 'Twitter'}</option>
+                <option value="friend" className="text-gray-900">{isRTL ? 'صديق' : 'Friend'}</option>
+                <option value="other" className="text-gray-900">{isRTL ? 'أخرى' : 'Other'}</option>
               </select>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'أي ملاحظات أو أسئلة إضافية' : 'Any additional notes or questions'}
               </label>
               <textarea
@@ -717,14 +864,14 @@ export default function ImportForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className=" rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+            <h1 className="text-3xl font-bold  mb-2" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'طلب خدمة الاستيراد' : 'Import Service Request'}
             </h1>
-            <p className="text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+            <p className="" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'املأ النموذج أدناه وسنقوم بالتواصل معك قريباً' : 'Fill out the form below and we will contact you soon'}
             </p>
           </div>
@@ -732,10 +879,10 @@ export default function ImportForm() {
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+              <span className="text-sm font-medium " dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? `الخطوة ${step} من 5` : `Step ${step} of 5`}
               </span>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm ">
                 {Math.round((step / 5) * 100)}%
               </span>
             </div>
@@ -762,7 +909,7 @@ export default function ImportForm() {
                 type="button"
                 onClick={prev}
                 disabled={step === 1}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-6 py-2 border border-gray-300 rounded-lg  hover:text-gray-900 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer outline-none transition-all duration-500"
                 dir={isRTL ? "rtl" : "ltr"}
               >
                 {isRTL ? 'السابق' : 'Previous'}
@@ -772,7 +919,7 @@ export default function ImportForm() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-50 hover:text-blue-600 cursor-pointer outline-none transition-all duration-500 transition-colors"
                   dir={isRTL ? "rtl" : "ltr"}
                 >
                   {isRTL ? 'التالي' : 'Next'}
@@ -792,6 +939,7 @@ export default function ImportForm() {
           </form>
         </div>
       </div>
+      <SiteReviewModal open={showReview} initialName={getValues('customerName')} onClose={() => setShowReview(false)} onSubmitted={() => setReviewDone(true)} locale={isRTL ? 'ar' : 'en'} />
     </div>
   );
 }

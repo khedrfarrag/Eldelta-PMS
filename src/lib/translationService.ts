@@ -1,3 +1,5 @@
+import { env } from '@/config/env'
+
 // LibreTranslate Service for dynamic translation
 export interface TranslationResult {
   ar: string;
@@ -25,7 +27,7 @@ class LibreTranslateService {
   private cache: Map<string, string>;
 
   constructor() {
-    this.baseUrl = process.env.LIBRETRANSLATE_URL || 'http://localhost:5000';
+    this.baseUrl = env.LIBRETRANSLATE_URL || 'http://localhost:5000';
     this.cache = new Map();
   }
 

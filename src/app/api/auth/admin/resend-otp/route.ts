@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { success, error } from '@/lib/http'
 import { resendOtpSchema } from '@/schemas/otp'
 import { generateNumericOtp, hashOtp } from '@/lib/otp'
@@ -14,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
     const { email } = parsed.data
 
-    const client = await clientPromise
+    const client = await getMongoClient()
     const db = client.db(process.env.MONGODB_DB)
 
     const admin = await db.collection('admins').findOne({ email })

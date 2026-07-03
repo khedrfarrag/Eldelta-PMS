@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
+import getMongoClient from "@/lib/mongodb";
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { verifyPassword, generateToken } from "@/lib/auth";
+import { env } from "@/config/env";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,8 +25,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
+    const client = await getMongoClient();
+    const db = client.db(env.MONGODB_DB);
 
     // First check super_admin collection
     let user = await db.collection("super_admin").findOne({ email });
@@ -78,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     response.cookies.set("auth-token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60, // 7 days
     });

@@ -1,12 +1,25 @@
 import axios from 'axios'
 
+// Helper function to get correct base URL
+const getBaseURL = () => {
+  // In production, always use current origin
+  if (typeof window !== 'undefined') {
+    return window.location.origin
+  }
+  
+  // Fallback for server-side or development
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+}
+
 // Create axios instance
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+  baseURL: getBaseURL(),
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
+  // Add CORS configuration
+  withCredentials: false,
 })
 
 // Request interceptor to add auth token
@@ -29,11 +42,25 @@ api.interceptors.response.use(
     return response
   },
   (error) => {
+    // Handle network errors
+    if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+      console.error('Network Error - API not reachable:', error.message)
+      // Try to use current origin as fallback
+      if (typeof window !== 'undefined') {
+        const currentOrigin = window.location.origin
+        if (error.config?.baseURL !== currentOrigin) {
+          console.log('Retrying with current origin:', currentOrigin)
+          // Don't retry automatically, just log the issue
+        }
+      }
+    }
+    
     if (error.response?.status === 401) {
       // Token expired or invalid
       localStorage.removeItem('token')
       window.location.href = '/login'
     }
+    
     return Promise.reject(error)
   }
 )
@@ -133,4 +160,16 @@ export const contactsAPI = {
     delete: (id: string) =>
       api.delete(`/api/admin/contact/${id}`),
   }
+}
+
+// Helper function to create API instance with current origin
+export const createApiInstance = () => {
+  return axios.create({
+    baseURL: getBaseURL(),
+    timeout: 10000,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: false,
+  })
 }

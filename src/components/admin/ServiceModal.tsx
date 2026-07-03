@@ -2,7 +2,7 @@
 
 import { Service } from "@/hooks/useServices";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { translateService } from "@/lib/translationService";
+// Removed runtime translation; data comes localized from API.
 
 interface ServiceModalProps {
   service: Service | null;
@@ -44,7 +44,18 @@ export default function ServiceModal({
 
   if (!isOpen || !service) return null;
 
-  const translatedService = translateService(service, language);
+  const pick = (val: any) =>
+    typeof val === 'object' && val !== null
+      ? (val as any)[language] || (val as any).ar || (val as any).en || ''
+      : val;
+
+  const translatedService = {
+    name: pick(service.name),
+    description: pick(service.description),
+    features: Array.isArray(service.features)
+      ? service.features.map((f: any) => (typeof f === 'object' ? pick(f) : f))
+      : [],
+  };
 
   const texts = {
     ar: {

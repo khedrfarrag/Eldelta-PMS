@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import clientPromise from '@/lib/mongodb'
+import getMongoClient from '@/lib/mongodb'
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 import { verifySuperAdmin, hashPassword } from '@/lib/auth'
+import { env } from '@/config/env'
 
 // GET - Get all admins (super admin only)
 export async function GET(request: NextRequest) {
@@ -14,8 +18,8 @@ export async function GET(request: NextRequest) {
       )
     }
     
-    const client = await clientPromise
-    const db = client.db(process.env.MONGODB_DB)
+    const client = await getMongoClient()
+    const db = client.db(env.MONGODB_DB)
     
     // Get all admins (excluding super admin)
     const admins = await db.collection('admins')
@@ -73,8 +77,8 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    const client = await clientPromise
-    const db = client.db(process.env.MONGODB_DB)
+    const client = await getMongoClient()
+    const db = client.db(env.MONGODB_DB)
     
     // Check if email already exists
     const existingAdmin = await db.collection('admins').findOne({ email })

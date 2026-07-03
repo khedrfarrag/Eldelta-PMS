@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
+import getMongoClient from "@/lib/mongodb";
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,7 +37,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const client = await clientPromise;
+    const client = await getMongoClient();
     const db = client.db(process.env.MONGODB_DB);
 
     // Create review
@@ -70,7 +73,7 @@ export async function POST(request: NextRequest) {
 // GET - Get approved reviews (public)
 export async function GET(request: NextRequest) {
   try {
-    const client = await clientPromise;
+    const client = await getMongoClient();
     const db = client.db(process.env.MONGODB_DB);
 
     // Get only approved reviews

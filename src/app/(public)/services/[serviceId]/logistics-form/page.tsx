@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import SiteReviewModal from "@/components/reviews/SiteReviewModal";
 import { useParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useForm } from "react-hook-form";
@@ -32,7 +33,9 @@ export default function LogisticsForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [showReview, setShowReview] = useState(false);
   const [step, setStep] = useState<Step>(1);
+  const [reviewDone, setReviewDone] = useState(false);
 
   type FormValues = {
     // الخطوة 1: البيانات الأساسية
@@ -47,7 +50,7 @@ export default function LogisticsForm() {
     fromCity: string;
     toCity: string;
     shipmentType: string;
-    cargoNature: string;
+    productType: string;
     
     // الخطوة 3: تفاصيل الشحنة
     weight: string;
@@ -90,7 +93,7 @@ export default function LogisticsForm() {
       fromCity: '',
       toCity: '',
       shipmentType: '',
-      cargoNature: '',
+      productType: '',
       weight: '',
       volume: '',
       packagesCount: '',
@@ -118,7 +121,13 @@ export default function LogisticsForm() {
         const data = await res.json()
         if (!isMounted) return
         if (data?.service) {
-          setService({ _id: data.service._id, name: data.service.name, description: data.service.description })
+          const nameText = typeof data.service.name === 'string'
+            ? data.service.name
+            : (data.service.name?.[language] || data.service.name?.ar || data.service.name?.en || '')
+          const descText = typeof data.service.description === 'string'
+            ? data.service.description
+            : (data.service.description?.[language] || data.service.description?.ar || data.service.description?.en || '')
+          setService({ _id: data.service._id, name: nameText, description: descText })
         }
       } catch (e) {
         console.error('Error fetching service:', e)
@@ -141,7 +150,7 @@ export default function LogisticsForm() {
         return { message: isRTL ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill all required fields" };
       }
     } else if (s === 2) {
-      const ok = await trigger(["fromCountry", "toCountry", "fromCity", "toCity", "shipmentType", "cargoNature"]);
+      const ok = await trigger(["fromCountry", "toCountry", "fromCity", "toCity", "shipmentType", "productType"]);
       if (!ok) {
         setFocus("fromCountry");
         return { message: isRTL ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill all required fields" };
@@ -189,9 +198,7 @@ export default function LogisticsForm() {
       
       if (response.data.success) {
         setSuccess(true);
-        setTimeout(() => {
-          router.push('/services');
-        }, 3000);
+        setTimeout(() => setShowReview(true), 1200);
       }
     } catch (error: any) {
       console.error('Error submitting form:', error);
@@ -206,7 +213,7 @@ export default function LogisticsForm() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+          <p className="mt-4 " dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'جاري تحميل النموذج...' : 'Loading form...'}
           </p>
         </div>
@@ -214,16 +221,40 @@ export default function LogisticsForm() {
     );
   }
 
-  if (success) {
+  if (success && !reviewDone) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center ">
+        <div className="max-w-md w-full rounded-lg shadow-lg p-8 text-center">
           <div className="text-green-600 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4" dir={isRTL ? "rtl" : "ltr"}>
+          <h2 className="text-2xl font-bold  mb-4" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'تم إرسال طلبك بنجاح!' : 'Request submitted successfully!'}
           </h2>
-          <p className="text-gray-600 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <p className=" mb-6" dir={isRTL ? "rtl" : "ltr"}>
             {isRTL ? 'سيتم التواصل معك قريباً لتأكيد التفاصيل' : 'We will contact you soon to confirm the details'}
+          </p>
+          <button
+            onClick={() => router.push('/services')}
+            className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+          >
+            {isRTL ? 'العودة للخدمات' : 'Back to Services'}
+          </button>
+        </div>
+        {/* Show site review modal after success, then show review success */}
+        <SiteReviewModal open={showReview} initialName={getValues('customerName')} onClose={() => setShowReview(false)} onSubmitted={() => setReviewDone(true)} locale={isRTL ? 'ar' : 'en'} />
+      </div>
+    );
+  }
+
+  if (success && reviewDone) {
+    return (
+      <div className="min-h-screen flex items-center justify-center ">
+        <div className="max-w-md w-full rounded-lg shadow-lg p-8 text-center">
+          <div className="text-green-600 text-6xl mb-4">✓</div>
+          <h2 className="text-2xl font-bold  mb-4" dir={isRTL ? "rtl" : "ltr"}>
+            {isRTL ? 'تم إرسال تقييمك بنجاح!' : 'Your review has been submitted!'}
+          </h2>
+          <p className=" mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            {isRTL ? 'شكراً لثقتك فينا — الدلتا للاستيراد والتصدير' : 'Thanks for your trust — Eldelta Import & Export'}
           </p>
           <button
             onClick={() => router.push('/services')}
@@ -241,13 +272,13 @@ export default function LogisticsForm() {
       case 1:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <h2 className="text-2xl font-bold  mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'البيانات الأساسية' : 'Basic Information'}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الاسم الكامل *' : 'Full Name *'}
                 </label>
                 <input
@@ -256,7 +287,7 @@ export default function LogisticsForm() {
                     required: isRTL ? 'الاسم الكامل مطلوب' : 'Full name is required',
                     minLength: { value: 2, message: isRTL ? 'الاسم يجب أن يكون حرفين على الأقل' : 'Name must be at least 2 characters' }
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.customerName ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -269,7 +300,7 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'اسم الشركة / النشاط التجاري *' : 'Company / Business Name *'}
                 </label>
                 <input
@@ -278,7 +309,7 @@ export default function LogisticsForm() {
                     required: isRTL ? 'اسم الشركة مطلوب' : 'Company name is required',
                     minLength: { value: 2, message: isRTL ? 'اسم الشركة يجب أن يكون حرفين على الأقل' : 'Company name must be at least 2 characters' }
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.companyName ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -291,7 +322,7 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'رقم الهاتف *' : 'Phone Number *'}
                 </label>
                 <input
@@ -303,7 +334,7 @@ export default function LogisticsForm() {
                       message: isRTL ? 'رقم الهاتف غير صحيح' : 'Invalid phone number'
                     }
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.phone ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -316,7 +347,7 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'البريد الإلكتروني *' : 'Email Address *'}
                 </label>
                 <input
@@ -328,7 +359,7 @@ export default function LogisticsForm() {
                       message: isRTL ? 'البريد الإلكتروني غير صحيح' : 'Invalid email address'
                     }
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -346,13 +377,13 @@ export default function LogisticsForm() {
       case 2:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <h2 className="text-2xl font-bold  mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'بيانات الشحن' : 'Shipping Information'}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'بلد الشحن (من) *' : 'Shipping Country (From) *'}
                 </label>
                 <input
@@ -362,7 +393,7 @@ export default function LogisticsForm() {
                     minLength: { value: 2, message: isRTL ? 'اسم البلد يجب أن يكون حرفين على الأقل' : 'Country name must be at least 2 characters' }
                   })}
                   placeholder={isRTL ? 'مثال: السعودية، الصين، ألمانيا...' : 'Example: Saudi Arabia, China, Germany...'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.fromCountry ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -375,7 +406,7 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'بلد الوجهة (إلى) *' : 'Destination Country (To) *'}
                 </label>
                 <input
@@ -385,7 +416,7 @@ export default function LogisticsForm() {
                     minLength: { value: 2, message: isRTL ? 'اسم البلد يجب أن يكون حرفين على الأقل' : 'Country name must be at least 2 characters' }
                   })}
                   placeholder={isRTL ? 'مثال: الإمارات، الكويت، مصر...' : 'Example: UAE, Kuwait, Egypt...'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.toCountry ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -398,7 +429,7 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الميناء/المدينة (من) *' : 'Port/City (From) *'}
                 </label>
                 <input
@@ -408,7 +439,7 @@ export default function LogisticsForm() {
                     minLength: { value: 2, message: isRTL ? 'اسم الميناء/المدينة يجب أن يكون حرفين على الأقل' : 'Port/City name must be at least 2 characters' }
                   })}
                   placeholder={isRTL ? 'مثال: جدة، شنغهاي، هامبورغ...' : 'Example: Jeddah, Shanghai, Hamburg...'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.fromCity ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -421,7 +452,7 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الميناء/المدينة (إلى) *' : 'Port/City (To) *'}
                 </label>
                 <input
@@ -431,7 +462,7 @@ export default function LogisticsForm() {
                     minLength: { value: 2, message: isRTL ? 'اسم الميناء/المدينة يجب أن يكون حرفين على الأقل' : 'Port/City name must be at least 2 characters' }
                   })}
                   placeholder={isRTL ? 'مثال: دبي، الكويت، القاهرة...' : 'Example: Dubai, Kuwait, Cairo...'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.toCity ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -444,24 +475,24 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'نوع الشحنة *' : 'Shipment Type *'}
                 </label>
                 <select
                   {...register('shipmentType', { 
                     required: isRTL ? 'نوع الشحنة مطلوب' : 'Shipment type is required'
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.shipmentType ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
                 >
-                  <option value="">{isRTL ? 'اختر نوع الشحنة' : 'Select shipment type'}</option>
-                  <option value="full_container">{isRTL ? 'حاوية كاملة' : 'Full Container'}</option>
-                  <option value="partial_container">{isRTL ? 'جزء من حاوية' : 'Partial Container'}</option>
-                  <option value="air">{isRTL ? 'شحن جوي' : 'Air Freight'}</option>
-                  <option value="land">{isRTL ? 'شحن بري' : 'Land Freight'}</option>
-                  <option value="express">{isRTL ? 'سريع' : 'Express'}</option>
+                  <option value="" className="text-gray-900">{isRTL ? 'اختر نوع الشحنة' : 'Select shipment type'}</option>
+                  <option value="full_container" className="text-gray-900">{isRTL ? 'حاوية كاملة' : 'Full Container'}</option>
+                  <option value="partial_container" className="text-gray-900">{isRTL ? 'جزء من حاوية' : 'Partial Container'}</option>
+                  <option value="air" className="text-gray-900">{isRTL ? 'شحن جوي' : 'Air Freight'}</option>
+                  <option value="land" className="text-gray-900">{isRTL ? 'شحن بري' : 'Land Freight'}</option>
+                  <option value="express" className="text-gray-900">{isRTL ? 'سريع' : 'Express'}</option>
                 </select>
                 {errors.shipmentType && (
                   <p className="mt-1 text-sm text-red-600" dir={isRTL ? "rtl" : "ltr"}>
@@ -471,26 +502,26 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
-                  {isRTL ? 'طبيعة البضاعة *' : 'Cargo Nature *'}
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                  {isRTL ? 'نوع المنتج *' : 'Product Type *'}
                 </label>
                 <select
-                  {...register('cargoNature', { 
-                    required: isRTL ? 'طبيعة البضاعة مطلوبة' : 'Cargo nature is required'
+                  {...register('productType', { 
+                    required: isRTL ? 'نوع المنتج مطلوب' : 'Product type is required'
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                    errors.cargoNature ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                    errors.productType ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
                 >
-                  <option value="">{isRTL ? 'اختر طبيعة البضاعة' : 'Select cargo nature'}</option>
+                  <option value="" className="text-gray-900">{isRTL ? 'اختر نوع المنتج' : 'Select product type'}</option>
                   {PRODUCT_CATEGORIES.map(cat => (
-                    <option key={cat.value} value={cat.value}>{isRTL ? cat.labelAr : cat.labelEn}</option>
+                    <option key={cat.value} value={cat.value} className="text-gray-900">{isRTL ? cat.labelAr : cat.labelEn}</option>
                   ))}
                 </select>
-                {errors.cargoNature && (
+                {errors.productType && (
                   <p className="mt-1 text-sm text-red-600" dir={isRTL ? "rtl" : "ltr"}>
-                    {errors.cargoNature.message}
+                    {errors.productType.message}
                   </p>
                 )}
               </div>
@@ -501,13 +532,13 @@ export default function LogisticsForm() {
       case 3:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <h2 className="text-2xl font-bold  mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'تفاصيل الشحنة' : 'Shipment Details'}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الوزن الإجمالي (كجم) *' : 'Total Weight (kg) *'}
                 </label>
                 <input
@@ -520,7 +551,7 @@ export default function LogisticsForm() {
                     }
                   })}
                   placeholder={isRTL ? 'مثال: 1500.5' : 'Example: 1500.5'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.weight ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -533,7 +564,7 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'الحجم أو المتر المكعب *' : 'Volume or Cubic Meters *'}
                 </label>
                 <input
@@ -546,7 +577,7 @@ export default function LogisticsForm() {
                     }
                   })}
                   placeholder={isRTL ? 'مثال: 25.5' : 'Example: 25.5'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.volume ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -559,7 +590,7 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'عدد الطرود أو الحاويات *' : 'Number of Packages or Containers *'}
                 </label>
                 <input
@@ -572,7 +603,7 @@ export default function LogisticsForm() {
                     }
                   })}
                   placeholder={isRTL ? 'مثال: 50' : 'Example: 50'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.packagesCount ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -585,7 +616,7 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'القيمة التقديرية للشحنة (بالدولار) *' : 'Estimated value of shipment (USD) *'}
                 </label>
                 <input
@@ -598,7 +629,7 @@ export default function LogisticsForm() {
                     }
                   })}
                   placeholder={isRTL ? 'مثال: 50000' : 'Example: 50000'}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.estimatedValue ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
@@ -611,23 +642,23 @@ export default function LogisticsForm() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'طريقة التسليم المطلوبة *' : 'Required delivery method *'}
                 </label>
                 <select
                   {...register('preferredDeliveryMethod', { 
                     required: isRTL ? 'طريقة التسليم مطلوبة' : 'Delivery method is required'
                   })}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                     errors.preferredDeliveryMethod ? 'border-red-500' : 'border-gray-300'
                   }`}
                   dir={isRTL ? "rtl" : "ltr"}
                 >
-                  <option value="">{isRTL ? 'اختر طريقة التسليم' : 'Select delivery method'}</option>
-                  <option value="door-to-door">{isRTL ? 'Door to Door' : 'Door to Door'}</option>
-                  <option value="port-to-port">{isRTL ? 'Port to Port' : 'Port to Port'}</option>
-                  <option value="cif">{isRTL ? 'CIF' : 'CIF'}</option>
-                  <option value="fob">{isRTL ? 'FOB' : 'FOB'}</option>
+                  <option value="" className="text-gray-900">{isRTL ? 'اختر طريقة التسليم' : 'Select delivery method'}</option>
+                  <option value="door-to-door" className="text-gray-900">{isRTL ? 'Door to Door' : 'Door to Door'}</option>
+                  <option value="port-to-port" className="text-gray-900">{isRTL ? 'Port to Port' : 'Port to Port'}</option>
+                  <option value="cif" className="text-gray-900">{isRTL ? 'CIF' : 'CIF'}</option>
+                  <option value="fob" className="text-gray-900">{isRTL ? 'FOB' : 'FOB'}</option>
                 </select>
                 {errors.preferredDeliveryMethod && (
                   <p className="mt-1 text-sm text-red-600" dir={isRTL ? "rtl" : "ltr"}>
@@ -642,7 +673,7 @@ export default function LogisticsForm() {
       case 4:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+          <h2 className="text-2xl font-bold  mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'الخدمات الإضافية' : 'Additional Services'}
             </h2>
             
@@ -653,7 +684,7 @@ export default function LogisticsForm() {
                   {...register('insuranceNeeded')}
                   className="mr-2 h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
                 />
-                <label className="text-sm text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="text-sm " dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل تحتاج تأمين على الشحنة؟' : 'Do you need insurance for the shipment?'}
                 </label>
               </div>
@@ -664,7 +695,7 @@ export default function LogisticsForm() {
                   {...register('trackingNeeded')}
                   className="mr-2 h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
                 />
-                <label className="text-sm text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="text-sm " dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل تحتاج تتبع مباشر للشحنة؟' : 'Do you need real-time tracking for the shipment?'}
                 </label>
               </div>
@@ -675,7 +706,7 @@ export default function LogisticsForm() {
                   {...register('doorToDoor')}
                   className="mr-2 h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
                 />
-                <label className="text-sm text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="text-sm " dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل تحتاج خدمة توصيل حتى باب العميل؟' : 'Do you need door-to-door delivery service?'}
                 </label>
               </div>
@@ -686,23 +717,23 @@ export default function LogisticsForm() {
                   {...register('customsAgent')}
                   className="mr-2 h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
                 />
-                <label className="text-sm text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+                <label className="text-sm " dir={isRTL ? "rtl" : "ltr"}>
                   {isRTL ? 'هل لديك وكيل تخليص جمركي خاص بك؟' : 'Do you have your own customs clearance agent?'}
                 </label>
               </div>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'موعد الشحن المطلوب' : 'Required shipping date'}
               </label>
               <select
                 {...register('shippingUrgency')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 dir={isRTL ? "rtl" : "ltr"}
               >
-                <option value="normal">{isRTL ? 'عادي' : 'Normal'}</option>
-                <option value="urgent">{isRTL ? 'مستعجل' : 'Urgent'}</option>
+                <option value="normal" className="text-gray-900">{isRTL ? 'عادي' : 'Normal'}</option>
+                <option value="urgent" className="text-gray-900">{isRTL ? 'مستعجل' : 'Urgent'}</option>
               </select>
             </div>
           </div>
@@ -711,38 +742,38 @@ export default function LogisticsForm() {
       case 5:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <h2 className="text-2xl font-bold  mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'معلومات إضافية' : 'Additional Information'}
             </h2>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'كيف سمعت عن خدماتنا؟' : 'How did you hear about our services?'}
               </label>
               <select
                 {...register('heardAboutUs')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 dir={isRTL ? "rtl" : "ltr"}
               >
-                <option value="">{isRTL ? 'اختر...' : 'Select...'}</option>
-                <option value="google">{isRTL ? 'جوجل' : 'Google'}</option>
-                <option value="facebook">{isRTL ? 'فيسبوك' : 'Facebook'}</option>
-                <option value="instagram">{isRTL ? 'انستقرام' : 'Instagram'}</option>
-                <option value="twitter">{isRTL ? 'تويتر' : 'Twitter'}</option>
-                <option value="friend">{isRTL ? 'صديق' : 'Friend'}</option>
-                <option value="other">{isRTL ? 'أخرى' : 'Other'}</option>
+                <option value="" className="text-gray-900">{isRTL ? 'اختر...' : 'Select...'}</option>
+                <option value="google" className="text-gray-900">{isRTL ? 'جوجل' : 'Google'}</option>
+                <option value="facebook" className="text-gray-900">{isRTL ? 'فيسبوك' : 'Facebook'}</option>
+                <option value="instagram" className="text-gray-900">{isRTL ? 'انستقرام' : 'Instagram'}</option>
+                <option value="twitter" className="text-gray-900">{isRTL ? 'تويتر' : 'Twitter'}</option>
+                <option value="friend" className="text-gray-900">{isRTL ? 'صديق' : 'Friend'}</option>
+                <option value="other" className="text-gray-900">{isRTL ? 'أخرى' : 'Other'}</option>
               </select>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2" dir={isRTL ? "rtl" : "ltr"}>
+              <label className="block text-sm font-medium  mb-2" dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? 'ملاحظات إضافية' : 'Additional notes'}
               </label>
               <textarea
                 {...register('notes')}
                 rows={4}
                 placeholder={isRTL ? 'أي معلومات إضافية تريد مشاركتها معنا...' : 'Any additional information you want to share with us...'}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 outline-none rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 dir={isRTL ? "rtl" : "ltr"}
               />
             </div>
@@ -755,14 +786,14 @@ export default function LogisticsForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className=" rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'طلب خدمة الشحن واللوجستيات' : 'Logistics & Shipping Service Request'}
             </h1>
-            <p className="text-gray-600" dir={isRTL ? "rtl" : "ltr"}>
+            <p className="" dir={isRTL ? "rtl" : "ltr"}>
               {isRTL ? 'املأ النموذج أدناه وسنقوم بالتواصل معك قريباً' : 'Fill out the form below and we will contact you soon'}
             </p>
           </div>
@@ -770,10 +801,10 @@ export default function LogisticsForm() {
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700" dir={isRTL ? "rtl" : "ltr"}>
+              <span className="text-sm font-medium " dir={isRTL ? "rtl" : "ltr"}>
                 {isRTL ? `الخطوة ${step} من 5` : `Step ${step} of 5`}
               </span>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm ">
                 {Math.round((step / 5) * 100)}%
               </span>
             </div>
@@ -786,7 +817,7 @@ export default function LogisticsForm() {
           </div>
 
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" dir={isRTL ? "rtl" : "ltr"}>
+            <div className="bg-red-100 border border-red-400  px-4 py-3 rounded mb-6" dir={isRTL ? "rtl" : "ltr"}>
               {error}
             </div>
           )}
@@ -800,7 +831,7 @@ export default function LogisticsForm() {
                 type="button"
                 onClick={prev}
                 disabled={step === 1}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50  hover:text-gray-900   cursor-pointer outline-none transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 dir={isRTL ? "rtl" : "ltr"}
               >
                 {isRTL ? 'السابق' : 'Previous'}
@@ -810,7 +841,7 @@ export default function LogisticsForm() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                  className="px-6 py-2 bg-orange-600 hover:bg-orange-50 hover:text-orange-600 text-white rounded-lg cursor-pointer outline-none transition-all duration-500 border border-orange-600 transition-colors"
                   dir={isRTL ? "rtl" : "ltr"}
                 >
                   {isRTL ? 'التالي' : 'Next'}
@@ -820,7 +851,7 @@ export default function LogisticsForm() {
                   type="button"
                   onClick={handleSubmit(onSubmit)}
                   disabled={submitting}
-                  className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-2 bg-orange-600  rounded-lg  bg-orange-600 hover:bg-orange-50 hover:text-orange-600 text-white cursor-pointer outline-none transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   dir={isRTL ? "rtl" : "ltr"}
                 >
                   {submitting ? (isRTL ? 'جاري الإرسال...' : 'Submitting...') : (isRTL ? 'إرسال الطلب' : 'Submit Request')}
@@ -830,6 +861,7 @@ export default function LogisticsForm() {
           </form>
         </div>
       </div>
+      <SiteReviewModal open={showReview} initialName={getValues('customerName')} onClose={() => setShowReview(false)} onSubmitted={() => setReviewDone(true)} locale={isRTL ? 'ar' : 'en'} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { servicesAPI } from '@/lib/axios'
-import { translateService } from '@/lib/translationService'
+// Removed runtime translation. Services come already localized from API.
 
 export interface Service {
   _id: string
@@ -91,11 +91,7 @@ export const useAdminServices = (language: string = 'ar') => {
       const response = await servicesAPI.admin.getAll({ ...params, lang: language })
       
       if (response.data.success) {
-        // Translate services to the current language
-        const translatedServices = response.data.services.map((service: any) => 
-          translateService(service, language as 'ar' | 'en')
-        )
-        setServices(translatedServices)
+        setServices(response.data.services)
         setPagination(response.data.pagination)
       } else {
         setError('Failed to fetch services')
